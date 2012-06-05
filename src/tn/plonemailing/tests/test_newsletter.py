@@ -268,6 +268,7 @@ class StringContaining(object):
         return self.required in actual
 
 
+@stubydoo.assert_expectations
 class TestMessageCompilation(TestNewsletterInterpolations):
 
     def test_compile(self):

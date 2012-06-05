@@ -90,6 +90,7 @@ class TestPossibleLists(unittest.TestCase):
         self.assertTrue(term.title == self.brain.Title)
 
 
+@stubydoo.assert_expectations
 class TestNewsletterFromContent(unittest.TestCase):
 
     def setUp(self):
@@ -282,6 +283,7 @@ class TestNewsletterFromContent(unittest.TestCase):
         self.assertEquals(self.adapted.html, u'The HTML code')
 
 
+@stubydoo.assert_expectations
 class TestNewsletterAttributesAdapter(unittest.TestCase):
 
     def setUp(self):
@@ -323,6 +325,7 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
             self.assertEquals(getattr(self.adapted, attr), value)
 
 
+@stubydoo.assert_expectations
 class TestMarkerHasRelations(unittest.TestCase):
     def runTest(self):
         from z3c.relationfield.interfaces import IHasRelations

@@ -30,7 +30,10 @@ setup(
         'lxml',
     ],
     extras_require={
-        'test': ['stubydoo'],
+        'test': [
+            'stubydoo',
+            'zope.app.testing',
+        ],
     },
     entry_points="""
     [z3c.autoinclude.plugin]

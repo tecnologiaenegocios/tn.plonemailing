@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:grok="http://namespaces.zope.org/grok"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="tn.plonemailing"
+    >
+
+  <includeDependencies package="." />
+
+  <permission
+      id="tn.plonemailing.SendContent"
+      title="tn.plonemailing: Send content"
+      />
+
+  <grok:grok package="." />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="TN Plone Mailing"
+      directory="profiles/default"
+      description="A Plone add-on for making newsletters"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <interface interface=".interfaces.IMailHost" />
+
+  <plone:behavior
+      title="Newsletter"
+      description="Newsletter from content"
+      provides=".behaviors.INewsletterFromContent"
+      marker=".behaviors.INewsletterFromContentMarker"
+      factory=".behaviors.NewsletterFromContent"
+      />
+
+</configure>

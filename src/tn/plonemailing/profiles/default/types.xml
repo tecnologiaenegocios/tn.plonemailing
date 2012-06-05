@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object name="portal_types">
+  <object name="tn.plonemailing.subscriber_list" meta_type="Dexterity FTI" />
+  <object name="tn.plonemailing.subscriber" meta_type="Dexterity FTI" />
+</object>

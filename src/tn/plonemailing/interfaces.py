@@ -1,0 +1,154 @@
+from Products.MailHost import interfaces as mailhost_interfaces
+from tn.plonemailing import _
+
+import zope.container.interfaces
+import zope.interface
+import zope.publisher.interfaces.browser
+import zope.schema
+import zope.sendmail
+
+
+class ISubscriber(zope.interface.Interface):
+    """A subscriber.
+    """
+
+    email  = zope.schema.TextLine(title=u'E-mail')
+    format = zope.schema.TextLine(title=u'Format')
+    name   = zope.schema.TextLine(title=u'Name', required=False)
+
+    preferences_url = zope.schema.TextLine(title=u'Preferences URL',
+                                           required=False)
+    removal_url     = zope.schema.TextLine(title=u'Removal URL',
+                                           required=False)
+
+
+class ISubscriberProvider(zope.interface.Interface):
+    """A subscriber provider.
+    """
+
+    def subscribers():
+        """An interable or iterator of the provided subscribers.
+
+        Each value returned or yielded must be an ISubscriber.
+        """
+
+
+class IPossibleSubscriberProvider(zope.interface.Interface):
+    """Marker interface for objects which don't provide ISubscriberProvider
+    directly, but can be adapted to it.
+    """
+
+
+class INewsletterHTML(zope.interface.Interface):
+    """Provides a newsletter body in HTML format.
+    """
+    html = zope.schema.Text(title=u'Body of the newsletter')
+
+
+class INewsletterAttributes(INewsletterHTML):
+    """Attributes that every newsletter should have.
+    """
+
+    author_address = zope.schema.TextLine()
+    author_name    = zope.schema.TextLine(required=False)
+
+    sender_address = zope.schema.TextLine()
+    sender_name    = zope.schema.TextLine(required=False)
+
+    reply_to_address = zope.schema.TextLine(required=False)
+    reply_to_name    = zope.schema.TextLine(required=False)
+
+    subject = zope.schema.TextLine()
+
+
+class IPossibleNewsletterAttributes(zope.interface.Interface):
+    """Marker interface for objects which don't provide INewsletterAttributes
+    directly, but can be adapted to it.
+    """
+
+
+class INewsletter(INewsletterAttributes):
+    """A template for producing a newsletter content for a given subscriber.
+    """
+
+    def compile(subscriber):
+        """Return an email.message.Message for the given subscriber.
+        """
+
+
+class IConverter(zope.interface.Interface):
+
+    content_type = zope.schema.ASCIILine(
+        title=u'Content type',
+        description=u'The content type this converter emits.'
+    )
+
+    newsletter = zope.interface.Attribute('The newsletter object')
+
+    def convert():
+        """Convert the newsletter content to another format.
+
+        Return a unicode string.
+        """
+
+
+class IMessageFactory(zope.interface.Interface):
+    """A factory for email.message.Message.
+    """
+
+    newsletter = zope.interface.Attribute('The newsletter object')
+    subscriber = zope.interface.Attribute('The subscriber object')
+
+    def __call__(content):
+        """Return a email.message.Message object with the content.
+        """
+
+
+class IMailHost(mailhost_interfaces.IMailHost):
+    """A specialized Mail Host for this package.
+    """
+
+
+class IConfiguration(zope.interface.Interface):
+    """Main configuration of this package.
+    """
+
+    subscriber_name_xpath = zope.schema.TextLine(
+        title=_(u'Subscriber name XPath selector'),
+    )
+
+    add_subscriber_preferences = zope.schema.Bool(
+        title=_(u'Add subscriber preferences link'),
+    )
+
+    subscriber_preferences_url_xpath = zope.schema.SourceText(
+        title=_(u'Subscriber preferences URL XPath selector'),
+        description=_(u'The element whose "href" attribute will be replaced. '
+                      u'This happens always, no matter if "Add subscriber '
+                      u'preferences link" is checked.'),
+    )
+
+    subscriber_preferences_html = zope.schema.SourceText(
+        title=_(u'Subscriber preferences HTML'),
+        description=_(u'In the absense of an element under the selector for '
+                      u'the URL, this text, '
+                      u'which must contain an element selectable through the '
+                      u'selector, will be used.')
+    )
+
+    add_subscriber_removal = zope.schema.Bool(
+        title=_(u'Add subscriber removal link'),
+    )
+
+    subscriber_removal_url_xpath = zope.schema.SourceText(
+        title=_(u'Subscriber removal URL XPath selector'),
+        description=_(u'The element whose "href" attribute will be replaced.')
+    )
+
+    subscriber_removal_html = zope.schema.SourceText(
+        title=_(u'Subscriber removal HTML'),
+        description=_(u'In the absense of an element under the selector for '
+                      u'the URL, this text, '
+                      u'which must contain an element selectable through the '
+                      u'selector, will be used.')
+    )

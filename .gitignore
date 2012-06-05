@@ -1,0 +1,12 @@
+bin/
+develop-eggs/
+parts/
+src/**/Paste*.egg/
+var/
+*.egg-info
+*.pyc
+*.pyo
+*.swp
+.installed.cfg
+.mr.developer.cfg
+Session.vim

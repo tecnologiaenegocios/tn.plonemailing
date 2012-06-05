@@ -1,0 +1,50 @@
+<html
+    xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    metal:use-macro="context/main_template/macros/master"
+    i18n:domain="tn.plonemailing"
+    lang="en"
+    >
+
+  <metal:block fill-slot="main">
+
+    <h1 class="documentFirstHeading" tal:content="view/label"></h1>
+
+    <div id="content-core">
+      <metal:block use-macro="context/@@ploneform-macros/titlelessform" />
+    </div>
+
+    <tal:block condition="view/invalid_subscribers">
+      <p tal:condition="not:view/all_failed" i18n:translate="">
+        The following subscribers could not be imported:
+      </p>
+
+      <p tal:condition="view/all_failed" i18n:translate="">
+        No subscriber was imported.
+      </p>
+
+      <table class="listing">
+        <caption i18n:translate="">Subscribers not imported</caption>
+        <thead>
+          <tr>
+            <th i18n:translate="">Row number</th>
+            <th i18n:translate="">E-mail (when available)</th>
+            <th i18n:translate="">Error</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr tal:repeat="subscriber view/invalid_subscribers">
+            <td tal:content="subscriber/number">12</td>
+            <td tal:content="subscriber/email">foo@bar</td>
+            <td tal:content="subscriber/error">Invalid e-mail address.</td>
+          </tr>
+        </tbody>
+      </table>
+    </tal:block>
+
+  </metal:block>
+
+</html>

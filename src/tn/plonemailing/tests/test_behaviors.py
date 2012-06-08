@@ -298,6 +298,16 @@ class TestNewsletterFromContent(unittest.TestCase):
         self.context.title = u'The content title'
         self.assertEquals(self.adapted.subject, u'The content title')
 
+    def test_uses_content_title_if_set_to_none(self):
+        self.context.title = u'The content title'
+        self.adapted.subject = None
+        self.assertEquals(self.adapted.subject, u'The content title')
+
+    def test_uses_content_title_if_set_to_blank(self):
+        self.context.title = u'The content title'
+        self.adapted.subject = u''
+        self.assertEquals(self.adapted.subject, u'The content title')
+
     def test_uses_subject_if_set(self):
         self.context.title = u'The content title'
         self.adapted.subject = u'A custom subject'

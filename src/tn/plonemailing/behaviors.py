@@ -136,7 +136,7 @@ apply = lambda fn: fn()
 
 def add_annotations_property(name, get_default=lambda self: None):
     def get(self):
-        return self.annotations.get(name, get_default(self))
+        return self.annotations.get(name, None) or get_default(self)
     def set(self, value):
         self.annotations[name] = value
     prop = property(get, set)

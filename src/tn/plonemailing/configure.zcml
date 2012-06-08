@@ -9,11 +9,6 @@
 
   <includeDependencies package="." />
 
-  <permission
-      id="tn.plonemailing.SendContent"
-      title="tn.plonemailing: Send content"
-      />
-
   <grok:grok package="." />
 
   <genericsetup:registerProfile

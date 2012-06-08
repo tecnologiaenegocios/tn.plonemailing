@@ -158,10 +158,8 @@ class NewsletterFromContent(object):
     @apply
     def author_address():
         def get(self):
-            return self.annotations.get(
-                'author_address',
-                self.mail_settings.email_from_address
-            )
+            return (self.annotations.get('author_address', None) or
+                    self.mail_settings.email_from_address)
         def set(self, value):
             self.annotations['author_address'] = value
         return property(get, set)
@@ -169,10 +167,8 @@ class NewsletterFromContent(object):
     @apply
     def author_name():
         def get(self):
-            return self.annotations.get(
-                'author_name',
-                self.mail_settings.email_from_name
-            )
+            return (self.annotations.get('author_name', None) or
+                    self.mail_settings.email_from_name)
         def set(self, value):
             self.annotations['author_name'] = value
         return property(get, set)

@@ -140,6 +140,18 @@ class TestNewsletterFromContent(unittest.TestCase):
         self.assertEquals(self.adapted.author_address,
                           "the site's email address")
 
+    def test_author_address_from_site_if_none(self):
+        self.adapted.author_address = None
+
+        self.assertEquals(self.adapted.author_address,
+                          "the site's email address")
+
+    def test_author_address_from_site_if_blank(self):
+        self.adapted.author_address = u''
+
+        self.assertEquals(self.adapted.author_address,
+                          "the site's email address")
+
     def test_uses_author_address_if_set(self):
         self.adapted.author_address = "the author's email address"
 
@@ -159,6 +171,14 @@ class TestNewsletterFromContent(unittest.TestCase):
     def test_author_name_from_site(self):
         self.assertEquals(self.adapted.author_name, "the site's name")
 
+    def test_author_name_from_site_if_none(self):
+        self.adapted.author_name = None
+        self.assertEquals(self.adapted.author_name, "the site's name")
+
+    def test_author_name_from_site_if_blank(self):
+        self.adapted.author_name = u''
+        self.assertEquals(self.adapted.author_name, "the site's name")
+
     def test_uses_author_name_if_set(self):
         self.adapted.author_name = "the author's name"
         self.assertEquals(self.adapted.author_name, "the author's name")
@@ -173,6 +193,18 @@ class TestNewsletterFromContent(unittest.TestCase):
     # Sender address
 
     def test_sender_address_from_site(self):
+        self.assertEquals(self.adapted.sender_address,
+                          "the site's email address")
+
+    def test_sender_address_from_site_if_author_address_is_none(self):
+        self.adapted.author_address = None
+
+        self.assertEquals(self.adapted.sender_address,
+                          "the site's email address")
+
+    def test_sender_address_from_site_if_author_address_is_blank(self):
+        self.adapted.author_address = u''
+
         self.assertEquals(self.adapted.sender_address,
                           "the site's email address")
 
@@ -201,7 +233,15 @@ class TestNewsletterFromContent(unittest.TestCase):
     def test_sender_name_from_site(self):
         self.assertEquals(self.adapted.sender_name, "the site's name")
 
-    def test_uses_sender_name_if_author_address_is_set(self):
+    def test_sender_name_from_site_if_author_name_is_none(self):
+        self.adapted.author_name = None
+        self.assertEquals(self.adapted.sender_name, "the site's name")
+
+    def test_sender_name_from_site_if_author_name_is_blank(self):
+        self.adapted.author_name = u''
+        self.assertEquals(self.adapted.sender_name, "the site's name")
+
+    def test_uses_sender_name_if_author_name_is_set(self):
         self.adapted.author_name = "the author's name"
         self.assertEquals(self.adapted.sender_name, "the author's name")
 

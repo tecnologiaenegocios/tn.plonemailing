@@ -26,7 +26,6 @@ setup(
         'plone.behavior',
         'plone.directives.form',
         'plone.namedfile[blobs]',
-        'collective.autopermission',
         'lxml',
     ],
     extras_require={

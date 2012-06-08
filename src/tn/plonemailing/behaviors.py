@@ -127,20 +127,20 @@ class INewsletterFromContent(form.Schema):
         required=False,
     )
 
-    html = zope.interface.Attribute("The HTML representation of the content")
-
 
 zope.interface.alsoProvides(INewsletterFromContent, form.IFormFieldProvider)
 
 apply = lambda fn: fn()
 
-def add_annotations_property(name, get_default=lambda self: None):
-    def get(self):
-        return self.annotations.get(name, None) or get_default(self)
-    def set(self, value):
-        self.annotations[name] = value
-    prop = property(get, set)
-    inspect.currentframe(1).f_locals[name] = prop
+def add_annotations_properties(*names):
+    def generate_property(name):
+        def get(self):
+            return self.annotations.get(name)
+        def set(self, value):
+            self.annotations[name] = value
+        return property(get, set)
+    for name in names:
+        inspect.currentframe(1).f_locals[name] = generate_property(name)
 
 
 class NewsletterFromContent(object):
@@ -151,54 +151,20 @@ class NewsletterFromContent(object):
 
     def __init__(self, context):
         self.context = context
-        self.html    = interfaces.INewsletterHTML(context).html
-        portal = getToolByName(context, 'portal_url').getPortalObject()
-        self.mail_settings = plone.app.controlpanel.mail.IMailSchema(portal)
 
-    @apply
-    def author_address():
-        def get(self):
-            return (self.annotations.get('author_address', None) or
-                    self.mail_settings.email_from_address)
-        def set(self, value):
-            self.annotations['author_address'] = value
-        return property(get, set)
-
-    @apply
-    def author_name():
-        def get(self):
-            return (self.annotations.get('author_name', None) or
-                    self.mail_settings.email_from_name)
-        def set(self, value):
-            self.annotations['author_name'] = value
-        return property(get, set)
-
-    @apply
-    def sender_address():
-        def get(self):
-            return self.annotations.get('sender_address', self.author_address)
-        def set(self, value):
-            self.annotations['sender_address'] = value
-        return property(get, set)
-
-    @apply
-    def sender_name():
-        def get(self):
-            return self.annotations.get('sender_name', self.author_name)
-        def set(self, value):
-            self.annotations['sender_name'] = value
-        return property(get, set)
-
-    add_annotations_property('reply_to_address')
-    add_annotations_property('reply_to_name')
-    add_annotations_property('subject', lambda self: self.context.title)
+    add_annotations_properties('author_address',   'author_name',
+                               'sender_address',   'sender_name',
+                               'reply_to_address', 'reply_to_name',
+                               'subject')
 
     # 'newsletter_from_content_lists' is implemented as an attribute, in order
     # to allow cataloging by z3c.relationfield.
     @apply
     def newsletter_from_content_lists():
         def get(self):
-            return self.context.newsletter_from_content_lists
+            return getattr(self.context,
+                           'newsletter_from_content_lists',
+                           None)
         def set(self, value):
             self.context.newsletter_from_content_lists = value
         return property(get, set)
@@ -218,12 +184,51 @@ class NewsletterAttributes(grok.Adapter):
     grok.implements(interfaces.INewsletterAttributes)
 
     def __init__(self, context):
-        behavior = INewsletterFromContent(context)
-        for property_name in ('author_address',   'author_name',
-                              'sender_address',   'sender_name',
-                              'reply_to_address', 'reply_to_name',
-                              'subject', 'html'):
-            setattr(self, property_name, getattr(behavior, property_name))
+        self.context = context
+
+    @property
+    def author_address(self):
+        return (self.behavior().author_address or
+                self.mail_settings().email_from_address)
+
+    @property
+    def author_name(self):
+        return (self.behavior().author_name or
+                self.mail_settings().email_from_name)
+
+    @property
+    def sender_address(self):
+        return self.behavior().sender_address or self.author_address
+
+    @property
+    def sender_name(self):
+        return self.behavior().sender_name or self.author_name
+
+    @property
+    def reply_to_address(self):
+        return self.behavior().reply_to_address
+
+    @property
+    def reply_to_name(self):
+        return self.behavior().reply_to_name
+
+    @property
+    def subject(self):
+        return self.behavior().subject or self.context.title
+
+    @property
+    @memoize
+    def html(self):
+        return interfaces.INewsletterHTML(self.context).html
+
+    @memoize
+    def mail_settings(self):
+        portal = getToolByName(self.context, 'portal_url').getPortalObject()
+        return plone.app.controlpanel.mail.IMailSchema(portal)
+
+    @memoize
+    def behavior(self):
+        return INewsletterFromContent(self.context)
 
 
 class INewsletterFromContentMarker(IHasRelations,

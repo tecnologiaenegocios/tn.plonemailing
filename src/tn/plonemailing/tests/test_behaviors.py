@@ -95,24 +95,8 @@ class TestNewsletterFromContent(unittest.TestCase):
 
     def setUp(self):
         placelesssetup.setUp(self)
-        zope.component.provideUtility(intids)
-
-        portal = stubydoo.double(
-            email_from_address="the site's email address",
-            email_from_name="the site's name"
-        )
 
         self.context = stubydoo.double()
-        self.context.portal_url = stubydoo.double(getPortalObject=lambda x:portal)
-
-        zope.interface.alsoProvides(portal,
-                                    plone.app.controlpanel.mail.IMailSchema)
-
-        @zope.component.adapter(None)
-        @zope.interface.implementer(interfaces.INewsletterHTML)
-        def newsletter_html(obj):
-            return stubydoo.double(html=u'The HTML code')
-        zope.component.provideAdapter(newsletter_html)
 
         # The persistency of NewsletterFromContent attributes is done in an
         # annotation.
@@ -134,203 +118,33 @@ class TestNewsletterFromContent(unittest.TestCase):
         )
 
 
-    # Author address
+    # The confusing code below will generate a test to prove that initially
+    # these attributes are empty, and that they are stored in an annotation.
 
-    def test_author_address_from_site(self):
-        self.assertEquals(self.adapted.author_address,
-                          "the site's email address")
+    def make_test(attr):
+        def test_value_empty(self):
+            self.assertTrue(getattr(self.adapted, attr) is None)
+        def test_value_persistency(self):
+            setattr(self.adapted, attr, 'the value')
+            new_adapted = behaviors.NewsletterFromContent(self.context)
+            self.assertEquals(getattr(new_adapted, attr), 'the value')
+        return (test_value_empty, test_value_persistency)
 
-    def test_author_address_from_site_if_none(self):
-        self.adapted.author_address = None
-
-        self.assertEquals(self.adapted.author_address,
-                          "the site's email address")
-
-    def test_author_address_from_site_if_blank(self):
-        self.adapted.author_address = u''
-
-        self.assertEquals(self.adapted.author_address,
-                          "the site's email address")
-
-    def test_uses_author_address_if_set(self):
-        self.adapted.author_address = "the author's email address"
-
-        self.assertEquals(self.adapted.author_address,
-                          "the author's email address")
-
-    def test_persists_author_address_in_context(self):
-        self.adapted.author_address = "the author's email address"
-
-        new_adapted = behaviors.NewsletterFromContent(self.context)
-        self.assertEquals(new_adapted.author_address,
-                          "the author's email address")
+    for attr in ('author_address',   'author_name',
+                 'sender_address',   'sender_name',
+                 'reply_to_address', 'reply_to_name',
+                 'subject', 'newsletter_from_content_lists'):
+        a, b = make_test(attr)
+        locals()['test_%s_initially_empty' % attr] = a
+        locals()['test_%s_is_persisted' % attr] = b
+        del a, b
+    del make_test
 
 
-    # Author name
-
-    def test_author_name_from_site(self):
-        self.assertEquals(self.adapted.author_name, "the site's name")
-
-    def test_author_name_from_site_if_none(self):
-        self.adapted.author_name = None
-        self.assertEquals(self.adapted.author_name, "the site's name")
-
-    def test_author_name_from_site_if_blank(self):
-        self.adapted.author_name = u''
-        self.assertEquals(self.adapted.author_name, "the site's name")
-
-    def test_uses_author_name_if_set(self):
-        self.adapted.author_name = "the author's name"
-        self.assertEquals(self.adapted.author_name, "the author's name")
-
-    def test_persists_author_name_in_context(self):
-        self.adapted.author_name = "the author's name"
-
-        new_adapted = behaviors.NewsletterFromContent(self.context)
-        self.assertEquals(new_adapted.author_name, "the author's name")
-
-
-    # Sender address
-
-    def test_sender_address_from_site(self):
-        self.assertEquals(self.adapted.sender_address,
-                          "the site's email address")
-
-    def test_sender_address_from_site_if_author_address_is_none(self):
-        self.adapted.author_address = None
-
-        self.assertEquals(self.adapted.sender_address,
-                          "the site's email address")
-
-    def test_sender_address_from_site_if_author_address_is_blank(self):
-        self.adapted.author_address = u''
-
-        self.assertEquals(self.adapted.sender_address,
-                          "the site's email address")
-
-    def test_uses_sender_address_if_author_address_is_set(self):
-        self.adapted.author_address = "the author's email address"
-
-        self.assertEquals(self.adapted.sender_address,
-                          "the author's email address")
-
-    def test_uses_sender_address_if_set(self):
-        self.adapted.sender_address = "the sender's email address"
-
-        self.assertEquals(self.adapted.sender_address,
-                          "the sender's email address")
-
-    def test_persists_sender_address_in_context(self):
-        self.adapted.sender_address = "the sender's email address"
-
-        new_adapted = behaviors.NewsletterFromContent(self.context)
-        self.assertEquals(new_adapted.sender_address,
-                          "the sender's email address")
-
-
-    # Sender name
-
-    def test_sender_name_from_site(self):
-        self.assertEquals(self.adapted.sender_name, "the site's name")
-
-    def test_sender_name_from_site_if_author_name_is_none(self):
-        self.adapted.author_name = None
-        self.assertEquals(self.adapted.sender_name, "the site's name")
-
-    def test_sender_name_from_site_if_author_name_is_blank(self):
-        self.adapted.author_name = u''
-        self.assertEquals(self.adapted.sender_name, "the site's name")
-
-    def test_uses_sender_name_if_author_name_is_set(self):
-        self.adapted.author_name = "the author's name"
-        self.assertEquals(self.adapted.sender_name, "the author's name")
-
-    def test_uses_sender_name_if_set(self):
-        self.adapted.sender_name = "the sender's name"
-        self.assertEquals(self.adapted.sender_name, "the sender's name")
-
-    def test_persists_sender_name_in_context(self):
-        self.adapted.sender_name = "the sender's name"
-
-        new_adapted = behaviors.NewsletterFromContent(self.context)
-        self.assertEquals(new_adapted.sender_name, "the sender's name")
-
-
-    # Reply-To address
-
-    def test_reply_to_address_is_none_if_not_set(self):
-        self.assertTrue(self.adapted.reply_to_address is None)
-
-    def test_uses_reply_to_address_if_set(self):
-        self.adapted.reply_to_address = "the reply email address"
-
-        self.assertEquals(self.adapted.reply_to_address,
-                          "the reply email address")
-
-    def test_persists_reply_to_address_in_context(self):
-        self.adapted.reply_to_address = "the reply email address"
-
-        new_adapted = behaviors.NewsletterFromContent(self.context)
-        self.assertEquals(new_adapted.reply_to_address,
-                          "the reply email address")
-
-
-    # Reply-To name
-
-    def test_reply_to_name_is_none_if_not_set(self):
-        self.assertTrue(self.adapted.reply_to_name is None)
-
-    def test_uses_reply_name_if_set(self):
-        self.adapted.reply_to_name = "the reply name"
-
-        self.assertEquals(self.adapted.reply_to_name, "the reply name")
-
-    def test_persists_reply_name_in_context(self):
-        self.adapted.reply_to_name = "the reply name"
-
-        new_adapted = behaviors.NewsletterFromContent(self.context)
-        self.assertEquals(new_adapted.reply_to_name, "the reply name")
-
-
-    # Subject
-
-    def test_uses_content_title_if_not_set(self):
-        self.context.title = u'The content title'
-        self.assertEquals(self.adapted.subject, u'The content title')
-
-    def test_uses_content_title_if_set_to_none(self):
-        self.context.title = u'The content title'
-        self.adapted.subject = None
-        self.assertEquals(self.adapted.subject, u'The content title')
-
-    def test_uses_content_title_if_set_to_blank(self):
-        self.context.title = u'The content title'
-        self.adapted.subject = u''
-        self.assertEquals(self.adapted.subject, u'The content title')
-
-    def test_uses_subject_if_set(self):
-        self.context.title = u'The content title'
-        self.adapted.subject = u'A custom subject'
-        self.assertEquals(self.adapted.subject, u'A custom subject')
-
-
-    # Lists
-
-    def test_newsletter_from_content_lists_from_content(self):
-        self.context.newsletter_from_content_lists = u'The content lists'
-        self.assertEquals(self.adapted.newsletter_from_content_lists,
-                          u'The content lists')
-
-    def test_newsletter_from_content_lists_is_set_in_the_context(self):
-        self.context.newsletter_from_content_lists = u'The content lists'
-        self.adapted.newsletter_from_content_lists = u'The new content lists'
+    def test_lists_are_saved_in_an_attribute(self):
+        self.adapted.newsletter_from_content_lists = ['the value']
         self.assertEquals(self.context.newsletter_from_content_lists,
-                          u'The new content lists')
-
-
-    # HTML
-    def test_html_is_the_adapted_newsletter_html_from_context(self):
-        self.assertEquals(self.adapted.html, u'The HTML code')
+                          ['the value'])
 
 
 @stubydoo.assert_expectations
@@ -338,27 +152,26 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
 
     def setUp(self):
         placelesssetup.setUp(self)
+        zope.component.provideUtility(intids)
 
-        self.newsletter_from_content = stubydoo.double(
-            author_address="the author's email address",
-            author_name="the author's name",
-            sender_address="the sender's email address",
-            sender_name="the sender's name",
-            reply_to_address="the reply email address",
-            reply_to_name="the reply name",
-            subject=u'The subject of the newsletter',
-            html=u'The resulting HTML code'
+        portal = stubydoo.double(
+            email_from_address="the site's email address",
+            email_from_name="the site's name"
         )
 
-        @zope.component.adapter(interfaces.IPossibleNewsletterAttributes)
-        @zope.interface.implementer(behaviors.INewsletterFromContent)
-        def behavior_factory(context):
-            return self.newsletter_from_content
-        zope.component.provideAdapter(behavior_factory)
-
         self.context = stubydoo.double()
-        zope.interface.alsoProvides(self.context,
-                                    interfaces.IPossibleNewsletterAttributes)
+        self.context.portal_url = stubydoo.double(getPortalObject=lambda x:portal)
+
+        zope.interface.alsoProvides(portal,
+                                    plone.app.controlpanel.mail.IMailSchema)
+
+        self.behavior = stubydoo.double()
+
+        @zope.component.adapter(None)
+        @zope.interface.implementer(behaviors.INewsletterFromContent)
+        def newsletter_from_content(context):
+            return self.behavior
+        zope.component.provideAdapter(newsletter_from_content)
 
         self.adapted = behaviors.NewsletterAttributes(self.context)
 
@@ -370,9 +183,145 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
             interfaces.INewsletterAttributes.providedBy(self.adapted)
         )
 
-    def test_copies_attributes_from_newsletter_content_adaptation(self):
-        for attr, value in self.newsletter_from_content.__dict__.items():
-            self.assertEquals(getattr(self.adapted, attr), value)
+    # Author address
+
+    def test_author_address_from_site_if_none_in_behavior(self):
+        self.behavior.author_address = None
+
+        self.assertEquals(self.adapted.author_address,
+                          "the site's email address")
+
+    def test_author_address_from_site_if_blank_in_behavior(self):
+        self.behavior.author_address = u''
+
+        self.assertEquals(self.adapted.author_address,
+                          "the site's email address")
+
+    def test_uses_author_address_if_set_in_behavior(self):
+        self.behavior.author_address = "the author's email address"
+
+        self.assertEquals(self.adapted.author_address,
+                          "the author's email address")
+
+    # Author name
+
+    def test_author_name_from_site_if_none_in_behavior(self):
+        self.behavior.author_name = None
+        self.assertEquals(self.adapted.author_name, "the site's name")
+
+    def test_author_name_from_site_if_blank_in_behavior(self):
+        self.behavior.author_name = u''
+        self.assertEquals(self.adapted.author_name, "the site's name")
+
+    def test_uses_author_name_if_set_in_behavior(self):
+        self.behavior.author_name = "the author's name"
+        self.assertEquals(self.adapted.author_name, "the author's name")
+
+
+    # Sender address
+
+    def test_sender_address_from_site_if_is_none_in_behavior(self):
+        self.behavior.sender_address = None
+        self.behavior.author_address = None
+
+        self.assertEquals(self.adapted.sender_address,
+                          "the site's email address")
+
+    def test_sender_address_from_site_if_is_blank_in_behavior(self):
+        self.behavior.sender_address = None
+        self.behavior.author_address = u''
+
+        self.assertEquals(self.adapted.sender_address,
+                          "the site's email address")
+
+    def test_uses_sender_address_if_author_address_is_set_in_behavior(self):
+        self.behavior.sender_address = None
+        self.behavior.author_address = "the author's email address"
+
+        self.assertEquals(self.adapted.sender_address,
+                          "the author's email address")
+
+    def test_uses_sender_address_if_set_in_behavior(self):
+        self.behavior.sender_address = "the sender's email address"
+
+        self.assertEquals(self.adapted.sender_address,
+                          "the sender's email address")
+
+
+    # Sender name
+
+    def test_sender_name_from_site_if_is_none_in_behavior(self):
+        self.behavior.sender_name = None
+        self.behavior.author_name = None
+        self.assertEquals(self.adapted.sender_name, "the site's name")
+
+    def test_sender_name_from_site_if_is_blank_in_behavior(self):
+        self.behavior.sender_name = None
+        self.behavior.author_name = u''
+        self.assertEquals(self.adapted.sender_name, "the site's name")
+
+    def test_uses_sender_name_if_author_name_is_set_in_behavior(self):
+        self.behavior.sender_name = None
+        self.behavior.author_name = "the author's name"
+        self.assertEquals(self.adapted.sender_name, "the author's name")
+
+    def test_uses_sender_name_if_set_in_behavior(self):
+        self.behavior.sender_name = "the sender's name"
+        self.assertEquals(self.adapted.sender_name, "the sender's name")
+
+
+    # Reply-To address
+
+    def test_reply_to_address_is_none_if_not_set_in_behavior(self):
+        self.behavior.reply_to_address = None
+        self.assertTrue(self.adapted.reply_to_address is None)
+
+    def test_uses_reply_to_address_if_set_in_behavior(self):
+        self.behavior.reply_to_address = "the reply email address"
+
+        self.assertEquals(self.adapted.reply_to_address,
+                          "the reply email address")
+
+
+    # Reply-To name
+
+    def test_reply_to_name_is_none_if_not_set_in_behavior(self):
+        self.behavior.reply_to_name = None
+        self.assertTrue(self.adapted.reply_to_name is None)
+
+    def test_uses_reply_name_if_set_in_behavior(self):
+        self.behavior.reply_to_name = "the reply name"
+
+        self.assertEquals(self.adapted.reply_to_name, "the reply name")
+
+
+    # Subject
+
+    def test_uses_content_title_if_set_to_none_in_behavior(self):
+        self.behavior.subject = None
+        self.context.title = u'The content title'
+        self.assertEquals(self.adapted.subject, u'The content title')
+
+    def test_uses_content_title_if_set_to_blank_in_behavior(self):
+        self.context.title = u'The content title'
+        self.behavior.subject = u''
+        self.assertEquals(self.adapted.subject, u'The content title')
+
+    def test_uses_subject_if_set_in_behavior(self):
+        self.context.title = u'The content title'
+        self.behavior.subject = u'A custom subject'
+        self.assertEquals(self.adapted.subject, u'A custom subject')
+
+
+    # HTML
+    def test_html_is_obtained_from_adapter(self):
+        @zope.component.adapter(None)
+        @zope.interface.implementer(interfaces.INewsletterHTML)
+        def newsletter_html(obj):
+            return stubydoo.double(html=u'The HTML code')
+        zope.component.provideAdapter(newsletter_html)
+
+        self.assertEquals(self.adapted.html, u'The HTML code')
 
 
 @stubydoo.assert_expectations

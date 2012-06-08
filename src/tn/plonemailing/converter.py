@@ -10,32 +10,36 @@ links_with_href_re = re.compile(r'(?m)<a([^<]+)href="([^<"]+)"([^<]*)>([^<]+)<\/
                                 re.IGNORECASE)
 
 
-class HTMLConverter(grok.Adapter):
-    grok.context(interfaces.INewsletter)
+class HTMLConverter(grok.MultiAdapter):
+    grok.adapts(None, None, interfaces.INewsletter)
     grok.implements(interfaces.IConverter)
     grok.name('html')
 
     content_type = 'text/html'
 
-    def __init__(self, newsletter):
+    def __init__(self, context, request, newsletter):
+        self.context    = context
+        self.request    = request
         self.newsletter = newsletter
 
-    def convert(self):
-        return self.newsletter.body
+    def convert(self, html):
+        return html
 
 
-class TextConverter(grok.Adapter):
-    grok.context(interfaces.INewsletter)
+class TextConverter(grok.MultiAdapter):
+    grok.adapts(None, None, interfaces.INewsletter)
     grok.implements(interfaces.IConverter)
     grok.name('text')
 
     content_type = 'text/plain'
 
-    def __init__(self, newsletter):
+    def __init__(self, context, request, newsletter):
+        self.context    = context
+        self.request    = request
         self.newsletter = newsletter
 
-    def convert(self):
-        html = lxml.html.document_fromstring(self.newsletter.body)
+    def convert(self, html):
+        html = lxml.html.document_fromstring(html)
         body = lxml.html.tostring(html.cssselect('body')[0], encoding=unicode)
         return self._to_text(body)
 

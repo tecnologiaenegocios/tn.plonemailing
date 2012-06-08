@@ -32,14 +32,16 @@ class TestNewsletter(unittest.TestCase):
 
         self.newsletter_attributes = stubydoo.double()
         self.context = stubydoo.double()
+        request = object()
         self.newsletter = newsletter.Newsletter(self.context,
+                                                request,
                                                 self.newsletter_attributes)
 
         self.message_factory = stubydoo.double(__call__=lambda x, c: c)
 
-        @zope.component.adapter(None, None, None)
+        @zope.component.adapter(None, None, None, None)
         @zope.interface.implementer(interfaces.IMessageFactory)
-        def message_factory_factory(context, newsletter, subscriber):
+        def message_factory_factory(context, request, newsletter, subscriber):
             return self.message_factory
         zope.component.provideAdapter(message_factory_factory)
 

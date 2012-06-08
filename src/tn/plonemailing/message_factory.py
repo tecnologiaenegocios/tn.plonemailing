@@ -2,7 +2,7 @@ from email import message
 from email import utils
 from five import grok
 from tn.plonemailing import interfaces
-from zope.component import getAdapter
+from zope.component import getMultiAdapter
 
 import quopri
 import email.header
@@ -13,11 +13,12 @@ import time
 
 
 class MessageFactory(grok.MultiAdapter):
-    grok.adapts(None, interfaces.INewsletter, interfaces.ISubscriber)
+    grok.adapts(None, None, interfaces.INewsletter, interfaces.ISubscriber)
     grok.implements(interfaces.IMessageFactory)
 
-    def __init__(self, context, newsletter, subscriber):
+    def __init__(self, context, request, newsletter, subscriber):
         self.context    = context
+        self.request    = request
         self.newsletter = newsletter
         self.subscriber = subscriber
 
@@ -25,11 +26,14 @@ class MessageFactory(grok.MultiAdapter):
         msg = build_message_root(self.newsletter, self.subscriber)
 
         if self.subscriber.format != u'text':
-            configure_multipart_message(self.newsletter,
+            configure_multipart_message(self.context,
+                                        self.request,
+                                        self.newsletter,
                                         self.subscriber,
                                         msg, content)
         else:
-            configure_text_message(self.newsletter, msg, content)
+            configure_text_message(self.context, self.request,
+                                   self.newsletter, msg, content)
 
         add_message_id(msg)
         return msg
@@ -42,8 +46,11 @@ def build_message_root(newsletter, subscriber):
                        newsletter.author_address)
     msg['To']      = utils.formataddr((subscriber.name, subscriber.email))
     msg['Date']    = utils.formatdate()
-    msg['Subject'] = email.header.make_header([(newsletter.subject, 'utf-8')],
-                                              header_name='Subject')
+
+    if newsletter.subject:
+        msg['Subject'] = email.header.make_header(
+            [(newsletter.subject, 'utf-8')], header_name='Subject'
+        )
 
     if subscriber.removal_url:
         msg['List-Unsubscribe'] = '<%s>' % subscriber.removal_url
@@ -64,20 +71,23 @@ def build_message_root(newsletter, subscriber):
 
     return msg
 
-def configure_multipart_message(newsletter, subscriber, message_root, content):
+def configure_multipart_message(context, request, newsletter, subscriber, message_root, content):
     message_root['Content-Type'] = 'multipart/alternative'
     message_root['Content-Transfer-Encoding'] = '7bit'
-    attach_content_as_part(newsletter, message_root, content, format=u'text')
-    attach_content_as_part(newsletter, message_root, content,
+    attach_content_as_part(context, request, newsletter, message_root, content,
+                           format=u'text')
+    attach_content_as_part(context, request, newsletter, message_root, content,
                            format=subscriber.format)
 
-def configure_text_message(newsletter, message_root, content):
-    converter = getAdapter(newsletter, interfaces.IConverter, name=u'text')
+def configure_text_message(context, request, newsletter, message_root, content):
+    converter = getMultiAdapter((context, request, newsletter),
+                                interfaces.IConverter, name=u'text')
     converted_content = converter.convert(content)
     set_part_payload(message_root, 'text/plain', converted_content)
 
-def attach_content_as_part(newsletter, message_root, content, format):
-    converter = getAdapter(newsletter, interfaces.IConverter, name=format)
+def attach_content_as_part(context, request, newsletter, message_root, content, format):
+    converter = getMultiAdapter((context, request, newsletter),
+                                interfaces.IConverter, name=format)
     content = converter.convert(content)
     content_type = converter.content_type
 
@@ -97,7 +107,9 @@ def add_address_header(part, header_name, name, address):
     if name:
         parts.append((name, 'utf-8'))
     parts.append(("<%s>" % address, 'ascii'))
-    part[header_name] = email.header.make_header(parts, header_name=header_name)
+    part[header_name] = unicode(
+        email.header.make_header(parts, header_name=header_name)
+    )
 
 domain_re = re.compile(r'.*@([^@]+)$')
 def add_message_id(message):
@@ -113,9 +125,9 @@ def extract_sender(message):
     addresses = []
 
     if message['Sender']:
-        addresses = extract_addresses(message['Sender'])
+        addresses.extend(extract_addresses(message['Sender']))
     if message['From']:
-        addresses = extract_addresses(message['From'])
+        addresses.extend(extract_addresses(message['From']))
 
     if len(addresses) != 1:
         raise ValueError('No single sender found in message.')

@@ -5,13 +5,15 @@ from zope.component import getUtility
 
 import inspect
 import lxml.html
+import zope.globalrequest
 
 
 @grok.adapter(interfaces.IPossibleNewsletterAttributes)
 @grok.implementer(interfaces.INewsletter)
 def newsletter_dispatcher(context):
     newsletter_attributes = interfaces.INewsletterAttributes(context)
-    return getMultiAdapter((context, newsletter_attributes),
+    request = zope.globalrequest.getRequest()
+    return getMultiAdapter((context, request, newsletter_attributes),
                            interfaces.INewsletter)
 
 
@@ -26,7 +28,7 @@ def add_attributes_from_newsletter_attributes(*property_names):
 
 
 class Newsletter(grok.MultiAdapter):
-    grok.adapts(None, interfaces.INewsletterAttributes)
+    grok.adapts(None, None, interfaces.INewsletterAttributes)
     grok.implements(interfaces.INewsletter)
 
     add_attributes_from_newsletter_attributes(
@@ -36,14 +38,15 @@ class Newsletter(grok.MultiAdapter):
         'subject', 'html'
     )
 
-    def __init__(self, context, newsletter_attributes):
+    def __init__(self, context, request, newsletter_attributes):
         self.context = context
+        self.request = request
         self.newsletter_attributes = newsletter_attributes
         self.configuration = getUtility(interfaces.IConfiguration)
 
     def compile(self, subscriber):
         html = self._interpolate(subscriber)
-        factory = getMultiAdapter((self.context, self, subscriber),
+        factory = getMultiAdapter((self.context, self.request, self, subscriber),
                                   interfaces.IMessageFactory)
         return factory(html)
 

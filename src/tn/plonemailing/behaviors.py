@@ -7,14 +7,13 @@ from Products.CMFCore.utils import getToolByName
 from tn.plonemailing import _
 from tn.plonemailing import interfaces
 from z3c.form.browser.orderedselect import SequenceChoiceSelectFieldWidget
-from z3c.relationfield import RelationChoice
-from z3c.relationfield import RelationList
 from z3c.relationfield.interfaces import IHasRelations
 from zope.annotation.interfaces import IAnnotations
 from zope.intid.interfaces import IIntIds
 
 import inspect
 import plone.app.controlpanel
+import z3c.relationfield
 import zope.component
 import zope.interface
 
@@ -52,12 +51,15 @@ class INewsletterFromContent(form.Schema):
         fields=('newsletter_from_content_lists',),
     )
 
-    form.widget(newsletter_from_content_lists=SequenceSelectFieldWidget)
-    newsletter_from_content_lists = RelationList(
-        title=_(u'Lists'),
-        description=_(u'The lists to which this content should be sent.'),
+    form.widget(subscriber_providers=SequenceSelectFieldWidget)
+    subscriber_providers = z3c.relationfield.RelationList(
+        title=_(u'Subscriber providers'),
+        description=_(u'The subscriber providers to which this content '
+                      u'should be sent.'),
         required=False,
-        value_type=RelationChoice(source=possibleSubscriberProviders)
+        value_type=z3c.relationfield.RelationChoice(
+            source=possibleSubscriberProviders
+        )
     )
 
     form.fieldset(
@@ -157,16 +159,16 @@ class NewsletterFromContent(object):
                                'reply_to_address', 'reply_to_name',
                                'subject')
 
-    # 'newsletter_from_content_lists' is implemented as an attribute, in order
-    # to allow cataloging by z3c.relationfield.
+    # 'subscriber_providers' is implemented as an attribute, in order to allow
+    # cataloging by z3c.relationfield.
     @apply
-    def newsletter_from_content_lists():
+    def subscriber_providers():
         def get(self):
             return getattr(self.context,
-                           'newsletter_from_content_lists',
-                           None)
+                           '_newsletter_from_content_subscriber_providers',
+                           z3c.relationfield.RelationList())
         def set(self, value):
-            self.context.newsletter_from_content_lists = value
+            self.context._newsletter_from_content_subscriber_providers = value
         return property(get, set)
 
     @property
@@ -235,3 +237,15 @@ class INewsletterFromContentMarker(IHasRelations,
                                    interfaces.IPossibleNewsletterAttributes):
     """Marker interface for items which can be turned into newsletters.
     """
+
+    # Since z3c.relationfield will do an attribute lookup to get the relations
+    # to index in its catalog, this field is declared by this interface,
+    # although it being just a marker provided by the object on which the
+    # behavior INewsletterFromContent is assigned, which in turn populates and
+    # manages this field.
+    _newsletter_from_content_subscriber_providers = z3c.relationfield.RelationList(
+        required=False,
+        value_type=z3c.relationfield.RelationChoice(
+            source=possibleSubscriberProviders
+        )
+    )

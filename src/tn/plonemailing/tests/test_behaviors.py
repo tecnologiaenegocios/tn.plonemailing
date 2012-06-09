@@ -9,6 +9,7 @@ from zope.schema.interfaces import IVocabularyTokenized
 import stubydoo
 import plone.app.controlpanel.mail
 import unittest
+import z3c.relationfield
 import zope.annotation
 import zope.interface
 import zope.intid
@@ -133,7 +134,7 @@ class TestNewsletterFromContent(unittest.TestCase):
     for attr in ('author_address',   'author_name',
                  'sender_address',   'sender_name',
                  'reply_to_address', 'reply_to_name',
-                 'subject', 'newsletter_from_content_lists'):
+                 'subject'):
         a, b = make_test(attr)
         locals()['test_%s_initially_empty' % attr] = a
         locals()['test_%s_is_persisted' % attr] = b
@@ -141,10 +142,21 @@ class TestNewsletterFromContent(unittest.TestCase):
     del make_test
 
 
-    def test_lists_are_saved_in_an_attribute(self):
-        self.adapted.newsletter_from_content_lists = ['the value']
-        self.assertEquals(self.context.newsletter_from_content_lists,
-                          ['the value'])
+    def test_subscriber_providers_is_empty(self):
+        self.assertEquals(self.adapted.subscriber_providers,
+                          z3c.relationfield.RelationList())
+
+    def test_subscriber_providers_is_persisted(self):
+        self.adapted.subscriber_providers = 'the value'
+        new_adapted = behaviors.NewsletterFromContent(self.context)
+        self.assertEquals(new_adapted.subscriber_providers, 'the value')
+
+    def test_subscriber_providers_is_saved_in_an_attribute(self):
+        self.adapted.subscriber_providers = 'the value'
+        self.assertEquals(
+            self.context._newsletter_from_content_subscriber_providers,
+            'the value'
+        )
 
 
 @stubydoo.assert_expectations

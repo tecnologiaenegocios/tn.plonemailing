@@ -68,28 +68,24 @@ class INewsletterFromContent(form.Schema):
 
     author_address = zope.schema.TextLine(
         title=_(u'Author e-mail address'),
-        description=_(u'The address of the author of the newsletter.  If none '
-                      u'is provided, the address of the user which is the '
-                      u'author of this newsletter will be used.  If the user '
-                      u'has no e-mail set in its preferences, the address '
-                      u'set as the contact form\'s address will be used.'),
+        description=_(u'The e-mail address of the author of the newsletter.  '
+                      u'If none is provided, the address '
+                      u'set as the site\'s contact form address will be used.'),
         required=False,
     )
 
     author_name = zope.schema.TextLine(
         title=_(u'Author name'),
-        description=_(u'The name of the author of the newsletter.  If none is '
-                      u'provided, the full name of the user which is the '
-                      u'author of this newsletter will be used.  If the user '
-                      u'has no full name set in its preferences, none will be '
-                      u'used.  This is the name which will appear in the in '
+        description=_(u'The name of the author of the newsletter.  '
+                      u'This is the name which will appear in the in '
                       u'the mailbox of the subscriber.'),
         required=False,
     )
 
     sender_address = zope.schema.TextLine(
-        title=_(u'Sender address'),
-        description=_(u'The address of the sender of the message.  This '
+        title=_(u'Sender e-mail address'),
+        description=_(u'The e-mail address of the sender of the newsletter.  '
+                      u'This '
                       u'should match the authentication address used to send '
                       u'the newsletter (otherwise you may have delivery '
                       u'problems for some subscribers).  If none is provided, '
@@ -105,8 +101,9 @@ class INewsletterFromContent(form.Schema):
     )
 
     reply_to_address = zope.schema.TextLine(
-        title=_("Reply address"),
-        description=_(u'The address where replies should go to.  Leave blank '
+        title=_("Reply e-mail address"),
+        description=_(u'The e-mail address where replies should go to.  '
+                      u'Leave blank '
                       u'to not set a reply address.'),
         required=base_newsletter['reply_to_address'].required,
     )

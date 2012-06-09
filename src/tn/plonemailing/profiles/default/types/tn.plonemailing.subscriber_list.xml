@@ -3,11 +3,11 @@
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
     name="tn.plonemailing.subscriber_list"
     meta_type="Dexterity FTI"
-    i18n:domain="tn.plonemailing"
+    i18n:domain="plone"
     >
 
-  <property name="title" i18n:translate="">Subscriber list</property>
-  <property name="description" i18n:translate="">A container for subscriber</property>
+  <property name="title" i18n:translate="">tn.plonemailing.subscriber_list-title</property>
+  <property name="description" i18n:translate="">tn.plonemailing.subscriber_list-description</property>
   <property name="content_icon">subscriber-list.png</property>
   <property name="allow_discussion">True</property>
   <property name="global_allow">True</property>
@@ -56,7 +56,7 @@
     <permission value="Modify portal content" />
   </action>
   <action
-      title="Import"
+      title="tn.plonemailing.subscriber_list-import-action"
       action_id="import"
       category="object"
       condition_expr=""

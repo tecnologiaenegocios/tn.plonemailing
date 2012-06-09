@@ -46,9 +46,13 @@ class INewsletterFromContent(form.Schema):
     """
 
     form.fieldset(
-        'lists',
-        label=_(u'Subscriber lists'),
-        fields=('newsletter_from_content_lists',),
+        'newsletter',
+        label=_(u'Newsletter'),
+        fields=('subscriber_providers',
+                'author_address',   'author_name',
+                'sender_address',   'sender_name',
+                'reply_to_address', 'reply_to_name',
+                'subject'),
     )
 
     form.widget(subscriber_providers=SequenceSelectFieldWidget)
@@ -60,15 +64,6 @@ class INewsletterFromContent(form.Schema):
         value_type=z3c.relationfield.RelationChoice(
             source=possibleSubscriberProviders
         )
-    )
-
-    form.fieldset(
-        'newsletter',
-        label=_(u'Newsletter'),
-        fields=('author_address',   'author_name',
-                'sender_address',   'sender_name',
-                'reply_to_address', 'reply_to_name',
-                'subject'),
     )
 
     author_address = zope.schema.TextLine(

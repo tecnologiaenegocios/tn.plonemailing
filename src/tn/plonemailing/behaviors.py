@@ -166,7 +166,7 @@ class NewsletterFromContent(object):
         def get(self):
             return getattr(self.context,
                            '_newsletter_from_content_subscriber_providers',
-                           z3c.relationfield.RelationList())
+                           [])
         def set(self, value):
             self.context._newsletter_from_content_subscriber_providers = value
         return property(get, set)

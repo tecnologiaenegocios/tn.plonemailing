@@ -9,7 +9,6 @@ from zope.schema.interfaces import IVocabularyTokenized
 import stubydoo
 import plone.app.controlpanel.mail
 import unittest
-import z3c.relationfield
 import zope.annotation
 import zope.interface
 import zope.intid
@@ -143,8 +142,7 @@ class TestNewsletterFromContent(unittest.TestCase):
 
 
     def test_subscriber_providers_is_empty(self):
-        self.assertEquals(self.adapted.subscriber_providers,
-                          z3c.relationfield.RelationList())
+        self.assertEquals(self.adapted.subscriber_providers, [])
 
     def test_subscriber_providers_is_persisted(self):
         self.adapted.subscriber_providers = 'the value'

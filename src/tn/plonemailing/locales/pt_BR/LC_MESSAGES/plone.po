@@ -30,7 +30,7 @@ msgstr "Inscrito"
 #. Default: "A container for subscriber"
 #: profiles/default/types/tn.plonemailing.subscriber_list.xml
 msgid "tn.plonemailing.subscriber_list-description"
-msgstr "Um contâiner para inscritos"
+msgstr "Um receptáculo para inscritos"
 
 #. Default: "Subscriber list"
 #: profiles/default/types/tn.plonemailing.subscriber_list.xml

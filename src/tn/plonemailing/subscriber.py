@@ -10,7 +10,9 @@ from z3c.form import util
 from z3c.form import validator
 from z3c.form.interfaces import IValidator
 from zope import schema
+from zope.event import notify
 from zope.interface import Interface, Invalid
+from zope.lifecycleevent import Attributes, ObjectModifiedEvent
 try:
     from zope.component.hooks import getSite
 except ImportError:
@@ -50,14 +52,13 @@ class EmailValidator(validator.SimpleFieldValidator, grok.MultiAdapter):
 
         if ISubscriberSchema.providedBy(self.context):
             container = self.context.__parent__
-            check_email_uniqueness(container, self.context.__name__,
-                                   subscriber)
+            checkEmailUniqueness(container, self.context.__name__, subscriber)
             return
 
-        check_email_uniqueness(self.context, None, subscriber)
+        checkEmailUniqueness(self.context, None, subscriber)
 
 
-def check_email_uniqueness(container, name, subscriber):
+def checkEmailUniqueness(container, name, subscriber):
     email = subscriber.title
     portal = getSite()
     path = '/'.join(container.getPhysicalPath())
@@ -73,6 +74,33 @@ def check_email_uniqueness(container, name, subscriber):
         return
 
     raise Invalid(_(u'E-mail address is not unique in this folder.'))
+
+
+def activateSubscriber(subscriber, time=None):
+    time = time or datetime.datetime.now()
+    publication = metadata.IPublication(subscriber)
+    publication.effective = time
+    notify_modified(subscriber, (metadata.IPublication, 'effective'))
+
+def getSubscriberActivation(subscriber):
+    publication = metadata.IPublication(subscriber)
+    return publication.effective
+
+def deactivateSubscriber(subscriber, time=None):
+    time = time or datetime.datetime.now()
+    publication = metadata.IPublication(subscriber)
+    publication.expires = time
+    notify_modified(subscriber, (metadata.IPublication, 'expires'))
+
+def getSubscriberDeactivation(subscriber):
+    publication = metadata.IPublication(subscriber)
+    return publication.expires
+
+def notify_modified(subscriber, *interfaces_attributes):
+    descriptions = [Attributes(params[0], *params[1:])
+                    for params in interfaces_attributes]
+    event = ObjectModifiedEvent(subscriber, *descriptions)
+    notify(event)
 
 
 class SubscriberAdapter(grok.Adapter):
@@ -130,8 +158,7 @@ class Activate(form.SchemaForm):
             self.status = self.formErrorsMessage
             return
 
-        publication = metadata.IPublication(self.context)
-        publication.effective = datetime.datetime.now()
+        activateSubscriber(self.context)
 
         IStatusMessage(self.request).add(_(
             u'subscription_confirmed',
@@ -171,8 +198,7 @@ class Deactivate(form.SchemaForm):
             self.status = self.formErrorsMessage
             return
 
-        publication = metadata.IPublication(self.context)
-        publication.expires = datetime.datetime.now()
+        deactivateSubscriber(self.context)
 
         IStatusMessage(self.request).add(_(
             u'subscription_removal_confirmed',

@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2012-06-09 21:04+0000\n"
+"POT-Creation-Date: 2012-06-11 23:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,11 +21,11 @@ msgstr ""
 msgid "<p>To unsubscribe yourself from this mailing list access <a href=\"#\" class=\"subscriber-removal\">this link</a> and confirm your unsubscription.</p>"
 msgstr "<p>Para se descadastrar desta lista de e-mails acesse <a href=\"#\" class=\"subscriber-removal\">este link</a> e confirme seu descadastramento.</p>"
 
-#: ./subscriber_list.py:35
+#: ./subscriber_list.py:37
 msgid "A short summary"
 msgstr "Um resumo curto"
 
-#: ./subscriber.py:126
+#: ./subscriber.py:154
 msgid "Activate"
 msgstr "Ativar"
 
@@ -37,7 +37,7 @@ msgstr "Adicionar link de preferências do inscrito"
 msgid "Add subscriber removal link"
 msgstr "Adicionar link de descadastramento do inscrito"
 
-#: ./subscriber_list.py:107
+#: ./subscriber_list.py:113
 msgid "All subscribers imported."
 msgstr "Todos os inscritos importados."
 
@@ -49,19 +49,19 @@ msgstr "E-mail do autor"
 msgid "Author name"
 msgstr "Nome do autor"
 
-#: ./subscriber_list.py:83
+#: ./subscriber_list.py:85
 msgid "CSV import"
 msgstr "Importaçao de CSV"
 
-#: ./subscriber_list.py:111
+#: ./subscriber_list.py:117
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: ./subscriber.py:167
+#: ./subscriber.py:194
 msgid "Deactivate"
 msgstr "Desativar"
 
-#: ./subscriber.py:38
+#: ./subscriber.py:40
 msgid "E-mail"
 msgstr "E-mail"
 
@@ -69,11 +69,11 @@ msgstr "E-mail"
 msgid "E-mail (when available)"
 msgstr "E-mail (quando disponível)"
 
-#: ./subscriber.py:75
+#: ./subscriber.py:76
 msgid "E-mail address is not unique in this folder."
 msgstr "Endereço de e-mail não é único nesta pasta."
 
-#: ./subscriber_list.py:71
+#: ./subscriber_list.py:73
 msgid "Encoding"
 msgstr "Codificação"
 
@@ -81,23 +81,23 @@ msgstr "Codificação"
 msgid "Error"
 msgstr "Erro"
 
-#: ./subscriber_list.py:68
+#: ./subscriber_list.py:70
 msgid "File"
 msgstr "Arquivo"
 
-#: ./subscriber_list.py:168
+#: ./subscriber_list.py:167
 msgid "File is not a proper CSV."
 msgstr "Arquivo não é um CSV apropriado."
 
-#: ./subscriber.py:39
+#: ./subscriber.py:41
 msgid "Format"
 msgstr "Formato"
 
-#: ./subscriber.py:31
+#: ./subscriber.py:33
 msgid "HTML"
 msgstr "HTML"
 
-#: ./subscriber_list.py:92
+#: ./subscriber_list.py:97
 msgid "Import"
 msgstr "Importar"
 
@@ -105,11 +105,15 @@ msgstr "Importar"
 msgid "In the absense of an element under the selector for the URL, this text, which must contain an element selectable through the selector, will be used."
 msgstr "Na ausência de um elemento sob este seletor para a URL, este texto, que precisa conter um elemento selecionável a partir do seletor, será usado."
 
-#: ./subscriber_list.py:129
+#: ./subscriber_list.py:222
+msgid "Invalid date format."
+msgstr "Formato de data inválido."
+
+#: ./subscriber_list.py:150
 msgid "Invalid line format."
 msgstr "Formato de linha inválido."
 
-#: ./subscriber_list.py:32
+#: ./subscriber_list.py:34
 msgid "Name"
 msgstr "Nome"
 
@@ -121,7 +125,7 @@ msgstr "Boletim informativo"
 msgid "No subscriber was imported."
 msgstr "Nenhum inscrito foi importado."
 
-#: ./subscriber_list.py:103
+#: ./subscriber_list.py:109
 msgid "One or more subscribers could not be imported."
 msgstr "Um ou mais inscritos não puderam ser importados."
 
@@ -177,7 +181,7 @@ msgstr "Seletor XPath da URl de descadastramento do inscrito"
 msgid "Subscribers not imported"
 msgstr "Inscritos não importados"
 
-#: ./subscriber.py:32
+#: ./subscriber.py:34
 msgid "Text"
 msgstr "Texto"
 
@@ -225,37 +229,37 @@ msgstr "O assunto do boletim.  Se nenhum é informado, o título do conteúdo é
 msgid "The subscriber providers to which this content should be sent."
 msgstr "Os provedores de inscritos para os quais este conteúdo deve ser enviado."
 
-#: ./subscriber_list.py:84
-msgid "Use this form to input a batch of subscribers (without confirmation). Provide a table with columns email and format (\"html\" or \"text\"), in this order, without headers."
-msgstr "Use este formulário para criar um lote de inscritos (sem confirmação).  Envie uma tabela com colunas email e formato (\"html\" ou \"text\"), nesta ordem, sem cabeçalhos."
+#: ./subscriber_list.py:86
+msgid "Use this form to input a batch of subscribers (without confirmation). Provide a CSV table with columns email and format (\"html\" or \"text\"), in this order, without headers.  Optionally, you can add one more column to inform an deactivation date for the subscriber.  Also, a fourth column may be added to indicate an activation date."
+msgstr "Use este formulário para criar um lote de inscritos (sem confirmação).  Envie uma tabela CSV com colunas email e formato (\"html\" ou \"text\"), nesta ordem, sem cabeçalhos.  Opcionalmente, você pode adicionar uma coluna a mais para informar uma data de desativação para o inscrito.  Ainda, uma quarta coluna pode ser adicionada para indicar uma data de ativação."
 
 #. Default: "Please confirm subscription in ${list_title} list."
-#: ./subscriber.py:118
+#: ./subscriber.py:146
 msgid "activate_subscriber_description_message"
 msgstr "Por favor confirme sua inscrição na lista ${list_title}."
 
 #. Default: "Subscription confirmation for ${email}"
-#: ./subscriber.py:112
+#: ./subscriber.py:140
 msgid "activate_subscriber_title_message"
 msgstr "Confirmação de inscrição de ${email}"
 
 #. Default: "Please confirm removal from ${list_title} list."
-#: ./subscriber.py:159
+#: ./subscriber.py:186
 msgid "deactivate_subscriber_description_message"
 msgstr "Por favor confirme descadastramento da lista ${list_title}."
 
 #. Default: "Removal confirmation for ${email}"
-#: ./subscriber.py:153
+#: ./subscriber.py:180
 msgid "deactivate_subscriber_title_message"
 msgstr "Confirmação de descadastramento para ${email}"
 
 #. Default: "Subscription of ${email} has been confirmed."
-#: ./subscriber.py:136
+#: ./subscriber.py:163
 msgid "subscription_confirmed"
 msgstr "Inscrição de ${email} for confirmada."
 
 #. Default: "Removal of ${email} from list ${list} has been confirmed."
-#: ./subscriber.py:177
+#: ./subscriber.py:203
 msgid "subscription_removal_confirmed"
 msgstr "Descadastramento de ${email} da lista ${list} foi confirmada."
 

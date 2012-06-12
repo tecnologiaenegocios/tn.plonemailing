@@ -15,14 +15,16 @@ from zope.interface import alsoProvides
 from zope.interface import Invalid
 
 import csv
+import datetime
 import z3c.form
 import zope.component
+import zope.i18n.format
 import zope.publisher
 
 
 def precondition(subscriber_list, name, object):
     if subscriber.ISubscriberSchema.providedBy(object):
-        subscriber.check_email_uniqueness(subscriber_list, name, object)
+        subscriber.checkEmailUniqueness(subscriber_list, name, object)
 
 
 class ISubscriberListSchema(form.Schema,
@@ -82,9 +84,12 @@ class CSVImportForm(form.SchemaForm):
     schema = IImportFormSchema
     label = _(u'CSV import')
     description = _(u"Use this form to input a batch of subscribers (without "
-                    u"confirmation). Provide a table with columns email and "
-                    u"format (\"html\" or \"text\"), in this order, without "
-                    u"headers.")
+                    u"confirmation). Provide a CSV table with columns email "
+                    u"and format (\"html\" or \"text\"), in this order, "
+                    u"without headers.  Optionally, you can add one more "
+                    u'column to inform an deactivation date for the '
+                    u'subscriber.  Also, a fourth column may be added to '
+                    u'indicate an activation date.')
     ignoreContext = True
     invalid_subscribers = []
     all_failed = True
@@ -97,7 +102,8 @@ class CSVImportForm(form.SchemaForm):
             return
 
         file = data['file']
-        errors = self._import(file.data, data['encoding'])
+        importer = CSVImporter(self.context, self.request)
+        errors = importer(file.data, data['encoding'])
 
         if errors:
             self.status = _(u'One or more subscribers could not be imported.')
@@ -112,55 +118,48 @@ class CSVImportForm(form.SchemaForm):
     def handleCancel(self, action):
         self.redirect_to_context()
 
-    def _import(self, data, encoding):
+    def redirect_to_context(self):
+        self.request.response.redirect(self.context.absolute_url())
+
+
+class CSVImporter(object):
+
+    def __init__(self, context, request, add_form=None):
+        self.context = context
+        self.request = request
+
+        if not add_form:
+            add_view = self.context.restrictedTraverse(
+                '++add++tn.plonemailing.subscriber'
+            )
+            add_form = add_view.form_instance
+        self.add_form = add_form
+
+
+    def __call__(self, data, encoding):
         all_errors = []
         dialect = csv.Sniffer().sniff(data[:512])
         reader = csv.reader(StringIO(data), dialect)
 
-        add_view = self.context.restrictedTraverse(
-            '++add++tn.plonemailing.subscriber'
-        )
-        add_form = add_view.form_instance
+        adder = SubscriberAdder(self.context, self.request, self.add_form)
 
         try:
             for idx, row in enumerate(reader):
-                if len(row) != 2:
+                if not 2 <= len(row) <= 4:
                     all_errors.append(dict(number=idx + 1, email='',
                                            error=_(u'Invalid line format.')))
                     continue
 
-                email, format = row
+                row = list(row) + (4 - len(row)) * [None]
+                email, format, deactivation, activation = row
+                email = email.decode(encoding)
+                format = format.decode(encoding)
 
-                request = zope.publisher.browser.TestRequest()
-                alsoProvides(request, z3c.form.interfaces.IFormLayer)
-                request.form['form.widgets.title']  = email.decode(encoding)
-                request.form['form.widgets.format'] = format.decode(encoding).lower()
-                add_form.request = request
-                add_form.update()
-
-                data, errors = add_form.extractData()
-                if errors:
-                    messages = []
-                    for view in errors:
-                        messages.append(unicode(view.error))
+                error = adder.add(email, format, activation, deactivation)
+                if error:
                     all_errors.append(dict(number=idx + 1, email=email,
-                                           error=u', '.join(messages)))
+                                           error=error))
                     continue
-
-                # This doesn't verify preconditions.
-                obj = add_form.createAndAdd(data)
-
-                try:
-                    # Check the precondition now explicitly, since now there's
-                    # an id set in the object.
-                    checkObject(self.context, obj.id, obj)
-                except Invalid, e:
-                    all_errors.append(dict(number=idx + 1, email=email,
-                                           error=unicode(e)))
-                    # Precondition was not satisfied.  Remove the subscriber.
-                    del self.context[obj.id]
-                    continue
-
                 self.all_failed = False
 
         except csv.Error:
@@ -169,5 +168,89 @@ class CSVImportForm(form.SchemaForm):
 
         return all_errors
 
-    def redirect_to_context(self):
-        self.request.response.redirect(self.context.absolute_url())
+
+class SubscriberAdder(object):
+
+    def __init__(self, context, request, add_form):
+        self.context = context
+        self.request = request
+        self.add_form = add_form
+
+    def add(self, email, format, activation, deactivation):
+        try:
+            activation = self.parse_datetime(activation)
+            deactivation = self.parse_datetime(deactivation)
+        except Invalid, e:
+            return unicode(e)
+
+        data, errors = self.get_add_data(email, format)
+        if errors:
+            messages = []
+            for view in errors:
+                messages.append(unicode(view.error))
+            return u', '.join(messages)
+
+        obj, error = self.add_subscriber_to_context(data)
+        if error is not None:
+            return error
+
+        self.set_activation(obj, activation, deactivation)
+
+    def parse_datetime(self, datestr):
+        if not datestr:
+            return None
+        locale = self.request.locale
+
+        parsers = [
+            locale.dates.getFormatter('date', 'short').parse,
+            locale.dates.getFormatter('date', 'medium').parse,
+            locale.dates.getFormatter('dateTime', 'short').parse,
+            locale.dates.getFormatter('dateTime', 'medium').parse,
+        ]
+
+        def to_datetime(date_or_datetime):
+            if isinstance(date_or_datetime, datetime.datetime):
+                return date_or_datetime
+            date = date_or_datetime
+            return datetime.datetime(date.year, date.month, date.day)
+
+        for parser in parsers:
+            try:
+                return to_datetime(parser(datestr))
+            except zope.i18n.format.DateTimeParseError:
+                continue
+        raise Invalid(_(u'Invalid date format.'))
+
+    def get_add_data(self, email, format):
+        prefix = self.add_form.prefix
+        request = zope.publisher.browser.TestRequest()
+
+        request.form[prefix + 'widgets.title']  = email
+        request.form[prefix + 'widgets.format'] = format.lower()
+        alsoProvides(request, z3c.form.interfaces.IFormLayer)
+
+        self.add_form.request = request
+        self.add_form.update()
+
+        return self.add_form.extractData()
+
+    def add_subscriber_to_context(self, data):
+        # This doesn't verify preconditions.
+        obj = self.add_form.createAndAdd(data)
+
+        try:
+            # Check the precondition now explicitly, since now there's
+            # an id set in the object.
+            checkObject(self.context, obj.id, obj)
+        except Invalid, e:
+            # Precondition was not satisfied.  Remove the subscriber.
+            del self.context[obj.id]
+            return (obj, unicode(e))
+
+        return (obj, None)
+
+    def set_activation(self, obj, activation, deactivation):
+        if activation:
+            subscriber.activateSubscriber(obj, activation)
+        if deactivation:
+            subscriber.deactivateSubscriber(obj, deactivation)

@@ -1,4 +1,5 @@
 bin/
+deps/
 develop-eggs/
 parts/
 src/**/Paste*.egg/

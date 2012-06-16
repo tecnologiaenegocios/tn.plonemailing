@@ -261,5 +261,5 @@ msgstr "Inscrição de ${email} for confirmada."
 #. Default: "Removal of ${email} from list ${list} has been confirmed."
 #: ./subscriber.py:203
 msgid "subscription_removal_confirmed"
-msgstr "Descadastramento de ${email} da lista ${list} foi confirmada."
+msgstr "Descadastramento de ${email} da lista ${list} foi confirmado."
 

@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2012-06-11 23:50+0000\n"
+"POT-Creation-Date: 2012-06-18 23:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,10 +16,6 @@ msgstr ""
 "Language-Name: English\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: tn.plonemailing\n"
-
-#: ./global_configuration.py:19
-msgid "<p>To unsubscribe yourself from this mailing list access <a href=\"#\" class=\"subscriber-removal\">this link</a> and confirm your unsubscription.</p>"
-msgstr "<p>Para se descadastrar desta lista de e-mails acesse <a href=\"#\" class=\"subscriber-removal\">este link</a> e confirme seu descadastramento.</p>"
 
 #: ./subscriber_list.py:37
 msgid "A short summary"
@@ -33,7 +29,7 @@ msgstr "Ativar"
 msgid "Add subscriber preferences link"
 msgstr "Adicionar link de preferências do inscrito"
 
-#: ./interfaces.py:140
+#: ./interfaces.py:142
 msgid "Add subscriber removal link"
 msgstr "Adicionar link de descadastramento do inscrito"
 
@@ -97,11 +93,19 @@ msgstr "Formato"
 msgid "HTML"
 msgstr "HTML"
 
+#: ./interfaces.py:122
+msgid "If a link for subscriber preferences should be added to the end of generated newsletters."
+msgstr "Se um link para preferências do inscrito deve ser adicionado ao fim de boletins gerados."
+
+#: ./interfaces.py:143
+msgid "If a link for subscriber removal should be added to the end of generated newsletters."
+msgstr "Se um link para descadastramento do inscrito deve ser adicionado ao fim de boletins gerados."
+
 #: ./subscriber_list.py:97
 msgid "Import"
 msgstr "Importar"
 
-#: ./interfaces.py:133
+#: ./interfaces.py:135
 msgid "In the absense of an element under the selector for the URL, this text, which must contain an element selectable through the selector, will be used."
 msgstr "Na ausência de um elemento sob este seletor para a URL, este texto, que precisa conter um elemento selecionável a partir do seletor, será usado."
 
@@ -157,11 +161,11 @@ msgstr "Assunto"
 msgid "Subscriber name XPath selector"
 msgstr "Seletor XPath para o nome do inscrito"
 
-#: ./interfaces.py:132
+#: ./interfaces.py:134
 msgid "Subscriber preferences HTML"
 msgstr "HTML de preferências do inscrito"
 
-#: ./interfaces.py:125
+#: ./interfaces.py:127
 msgid "Subscriber preferences URL XPath selector"
 msgstr "Seletor XPath da URL de preferências do inscrito"
 
@@ -169,11 +173,11 @@ msgstr "Seletor XPath da URL de preferências do inscrito"
 msgid "Subscriber providers"
 msgstr "Provedores de inscritos"
 
-#: ./interfaces.py:149
+#: ./interfaces.py:155
 msgid "Subscriber removal HTML"
 msgstr "HTML de descadastramento do inscrito"
 
-#: ./interfaces.py:144
+#: ./interfaces.py:148
 msgid "Subscriber removal URL XPath selector"
 msgstr "Seletor XPath da URl de descadastramento do inscrito"
 
@@ -197,13 +201,13 @@ msgstr "O endereço de e-mail do remetente do boletim.  Este deve ser igual ao e
 msgid "The e-mail address where replies should go to.  Leave blank to not set a reply address."
 msgstr "O endereço de e-mail para onde respostas devem ir.  Deixe em branco para não usar um endereço de resposta."
 
-#: ./interfaces.py:145
-msgid "The element whose \"href\" attribute will be replaced."
-msgstr "O elemento cujo atributo \"href\" será substituído."
-
-#: ./interfaces.py:126
+#: ./interfaces.py:128
 msgid "The element whose \"href\" attribute will be replaced. This happens always, no matter if \"Add subscriber preferences link\" is checked."
 msgstr "O elemento cujo atributo \"href\" será substituído. Isto acontece sempre, não importa se \"Adicionar link de preferências do inscrito\" está marcado."
+
+#: ./interfaces.py:149
+msgid "The element whose \"href\" attribute will be replaced. This happens always, no matter if \"Add subscriber removal link\" is checked."
+msgstr "O elemento cujo atributo \"href\" será substituído. Isto acontece sempre, não importa se \"Adicionar link de remoção do inscrito\" está marcado."
 
 #: ./subscriber_list_templates/csvimportform.pt:20
 msgid "The following subscribers could not be imported:"

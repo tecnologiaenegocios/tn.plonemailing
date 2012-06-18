@@ -1,23 +1,39 @@
 from five import grok
-from tn.plonemailing import _
+from plone.registry.interfaces import IRegistry
 from tn.plonemailing import interfaces
+from zope.component import getUtility
+
 
 class GlobalConfiguration(grok.GlobalUtility):
     grok.implements(interfaces.IConfiguration)
 
-    subscriber_name_xpath = \
-            u"//*[contains(concat(' ', @class, ' '), ' subscriber-name ')]"
+    @property
+    def subscriber_name_xpath(self):
+        return self.from_registry('subscriber_name_xpath')
 
-    add_subscriber_preferences = False
-    subscriber_preferences_url_xpath = \
-            u"//a[contains(concat(' ', @class, ' '), ' subscriber-preferences ')]/@href"
-    subscriber_preferences_html = u''
+    @property
+    def add_subscriber_preferences(self):
+        return self.from_registry('add_subscriber_preferences')
 
-    add_subscriber_removal = True
-    subscriber_removal_url_xpath = \
-            u"//a[contains(concat(' ', @class, ' '), ' subscriber-removal ')]/@href"
-    subscriber_removal_html = _(
-        u'<p>To unsubscribe yourself from this mailing list access <a '
-        u'href="#" class="subscriber-removal">this link</a> and confirm '
-        u'your unsubscription.</p>'
-    )
+    @property
+    def subscriber_preferences_url_xpath(self):
+        return self.from_registry('subscriber_preferences_url_xpath')
+
+    @property
+    def subscriber_preferences_html(self):
+        return self.from_registry('subscriber_preferences_html') or u''
+
+    @property
+    def add_subscriber_removal(self):
+        return self.from_registry('add_subscriber_removal')
+
+    @property
+    def subscriber_removal_url_xpath(self):
+        return self.from_registry('subscriber_removal_url_xpath')
+
+    @property
+    def subscriber_removal_html(self):
+        return self.from_registry('subscriber_removal_html') or u''
+
+    def from_registry(self, key):
+        return getUtility(IRegistry)['tn.plonemailing.' + key]

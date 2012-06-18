@@ -119,6 +119,8 @@ class IConfiguration(zope.interface.Interface):
 
     add_subscriber_preferences = zope.schema.Bool(
         title=_(u'Add subscriber preferences link'),
+        description=_(u'If a link for subscriber preferences should be '
+                      u'added to the end of generated newsletters.'),
     )
 
     subscriber_preferences_url_xpath = zope.schema.SourceText(
@@ -138,11 +140,15 @@ class IConfiguration(zope.interface.Interface):
 
     add_subscriber_removal = zope.schema.Bool(
         title=_(u'Add subscriber removal link'),
+        description=_(u'If a link for subscriber removal should be '
+                      u'added to the end of generated newsletters.'),
     )
 
     subscriber_removal_url_xpath = zope.schema.SourceText(
         title=_(u'Subscriber removal URL XPath selector'),
-        description=_(u'The element whose "href" attribute will be replaced.')
+        description=_(u'The element whose "href" attribute will be replaced. '
+                      u'This happens always, no matter if "Add subscriber '
+                      u'removal link" is checked.'),
     )
 
     subscriber_removal_html = zope.schema.SourceText(

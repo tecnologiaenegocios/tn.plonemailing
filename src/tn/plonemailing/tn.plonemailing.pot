@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2012-06-11 23:50+0000\n"
+"POT-Creation-Date: 2012-06-18 23:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,10 +16,6 @@ msgstr ""
 "Language-Name: English\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: tn.plonemailing\n"
-
-#: ./global_configuration.py:19
-msgid "<p>To unsubscribe yourself from this mailing list access <a href=\"#\" class=\"subscriber-removal\">this link</a> and confirm your unsubscription.</p>"
-msgstr ""
 
 #: ./subscriber_list.py:37
 msgid "A short summary"
@@ -33,7 +29,7 @@ msgstr ""
 msgid "Add subscriber preferences link"
 msgstr ""
 
-#: ./interfaces.py:140
+#: ./interfaces.py:142
 msgid "Add subscriber removal link"
 msgstr ""
 
@@ -97,11 +93,19 @@ msgstr ""
 msgid "HTML"
 msgstr ""
 
+#: ./interfaces.py:122
+msgid "If a link for subscriber preferences should be added to the end of generated newsletters."
+msgstr ""
+
+#: ./interfaces.py:143
+msgid "If a link for subscriber removal should be added to the end of generated newsletters."
+msgstr ""
+
 #: ./subscriber_list.py:97
 msgid "Import"
 msgstr ""
 
-#: ./interfaces.py:133
+#: ./interfaces.py:135
 msgid "In the absense of an element under the selector for the URL, this text, which must contain an element selectable through the selector, will be used."
 msgstr ""
 
@@ -157,11 +161,11 @@ msgstr ""
 msgid "Subscriber name XPath selector"
 msgstr ""
 
-#: ./interfaces.py:132
+#: ./interfaces.py:134
 msgid "Subscriber preferences HTML"
 msgstr ""
 
-#: ./interfaces.py:125
+#: ./interfaces.py:127
 msgid "Subscriber preferences URL XPath selector"
 msgstr ""
 
@@ -169,11 +173,11 @@ msgstr ""
 msgid "Subscriber providers"
 msgstr ""
 
-#: ./interfaces.py:149
+#: ./interfaces.py:155
 msgid "Subscriber removal HTML"
 msgstr ""
 
-#: ./interfaces.py:144
+#: ./interfaces.py:148
 msgid "Subscriber removal URL XPath selector"
 msgstr ""
 
@@ -190,19 +194,19 @@ msgid "The e-mail address of the author of the newsletter.  If none is provided,
 msgstr ""
 
 #: ./behaviors.py:87
-msgid "The e-mail address of the sender of the newsletter.  This should match the authentication address used to send the newsletter (otherwise you may have delivery problems for some subscribers).  If none is provided, the \"Author e-mail address\" is used."
+msgid "The e-mail address of the sender of the newsletter.  This should match the authentication address used to send the newsletter (otherwise you may have delivery problems for some subscribers).  If none is provided, the "Author e-mail address" is used."
 msgstr ""
 
 #: ./behaviors.py:105
 msgid "The e-mail address where replies should go to.  Leave blank to not set a reply address."
 msgstr ""
 
-#: ./interfaces.py:145
-msgid "The element whose \"href\" attribute will be replaced."
+#: ./interfaces.py:128
+msgid "The element whose "href" attribute will be replaced. This happens always, no matter if "Add subscriber preferences link" is checked."
 msgstr ""
 
-#: ./interfaces.py:126
-msgid "The element whose \"href\" attribute will be replaced. This happens always, no matter if \"Add subscriber preferences link\" is checked."
+#: ./interfaces.py:149
+msgid "The element whose "href" attribute will be replaced. This happens always, no matter if "Add subscriber removal link" is checked."
 msgstr ""
 
 #: ./subscriber_list_templates/csvimportform.pt:20
@@ -218,7 +222,7 @@ msgid "The name of the person whom replies should go to."
 msgstr ""
 
 #: ./behaviors.py:98
-msgid "The name of the sender of the newsletter.  If none is provided, the \"Author name\" is used."
+msgid "The name of the sender of the newsletter.  If none is provided, the "Author name" is used."
 msgstr ""
 
 #: ./behaviors.py:119
@@ -230,7 +234,7 @@ msgid "The subscriber providers to which this content should be sent."
 msgstr ""
 
 #: ./subscriber_list.py:86
-msgid "Use this form to input a batch of subscribers (without confirmation). Provide a CSV table with columns email and format (\"html\" or \"text\"), in this order, without headers.  Optionally, you can add one more column to inform an deactivation date for the subscriber.  Also, a fourth column may be added to indicate an activation date."
+msgid "Use this form to input a batch of subscribers (without confirmation). Provide a CSV table with columns email and format ("html" or "text"), in this order, without headers.  Optionally, you can add one more column to inform an deactivation date for the subscriber.  Also, a fourth column may be added to indicate an activation date."
 msgstr ""
 
 #. Default: "Please confirm subscription in ${list_title} list."

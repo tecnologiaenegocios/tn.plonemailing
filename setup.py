@@ -23,6 +23,7 @@ setup(
         'setuptools',
         'Plone',
         'plone.app.dexterity',
+        'plone.app.registry',
         'plone.behavior',
         'plone.directives.form',
         'plone.namedfile[blobs]',

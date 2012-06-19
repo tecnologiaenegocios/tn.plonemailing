@@ -37,7 +37,7 @@ intids = IntIds()
 
 
 @stubydoo.assert_expectations
-class TestPossibleLists(unittest.TestCase):
+class TestPossibleSubscriberProviders(unittest.TestCase):
 
     def setUp(self):
         placelesssetup.setUp(self)
@@ -57,35 +57,35 @@ class TestPossibleLists(unittest.TestCase):
             )
         ).and_return([self.brain])
 
-        behaviors.possibleSubscriberProviders(self.context)
+        behaviors.possiblePossibleSubscriberProviders(self.context)
 
     def tearDown(self):
         placelesssetup.tearDown()
 
     def test_vocabulary_is_returned(self):
-        vocabulary = behaviors.possibleSubscriberProviders(self.context)
+        vocabulary = behaviors.possiblePossibleSubscriberProviders(self.context)
         self.assertTrue(IVocabularyTokenized.providedBy(vocabulary))
 
     def test_vocabulary_term_has_titles(self):
-        vocabulary = behaviors.possibleSubscriberProviders(self.context)
+        vocabulary = behaviors.possiblePossibleSubscriberProviders(self.context)
         term = vocabulary.getTermByToken(str(hash(self.possible_list)))
         self.assertTrue(ITitledTokenizedTerm.providedBy(term))
 
     def test_vocabulary_term_values_are_the_actual_objects(self):
-        vocabulary = behaviors.possibleSubscriberProviders(self.context)
+        vocabulary = behaviors.possiblePossibleSubscriberProviders(self.context)
         term = vocabulary.getTermByToken(str(hash(self.possible_list)))
         self.assertTrue(term.value is self.possible_list)
 
     def test_terms_with_titles_as_utf8_byte_strings(self):
         self.brain.Title = 'UTF-8 string á'
-        vocabulary = behaviors.possibleSubscriberProviders(self.context)
+        vocabulary = behaviors.possiblePossibleSubscriberProviders(self.context)
         term = vocabulary.getTermByToken(str(hash(self.possible_list)))
 
         self.assertTrue(term.title == self.brain.Title.decode('utf-8'))
 
     def test_terms_with_titles_as_unicode_strings(self):
         self.brain.Title = u'á'
-        vocabulary = behaviors.possibleSubscriberProviders(self.context)
+        vocabulary = behaviors.possiblePossibleSubscriberProviders(self.context)
         term = vocabulary.getTermByToken(str(hash(self.possible_list)))
 
         self.assertTrue(term.title == self.brain.Title)
@@ -142,18 +142,19 @@ class TestNewsletterFromContent(unittest.TestCase):
     del make_test
 
 
-    def test_subscriber_providers_is_empty(self):
-        self.assertEquals(self.adapted.subscriber_providers, [])
+    def test_possible_subscriber_providers_is_empty(self):
+        self.assertEquals(self.adapted.possible_subscriber_providers, [])
 
-    def test_subscriber_providers_is_persisted(self):
-        self.adapted.subscriber_providers = 'the value'
+    def test_possible_subscriber_providers_is_persisted(self):
+        self.adapted.possible_subscriber_providers = 'the value'
         new_adapted = behaviors.NewsletterFromContent(self.context)
-        self.assertEquals(new_adapted.subscriber_providers, 'the value')
+        self.assertEquals(new_adapted.possible_subscriber_providers,
+                          'the value')
 
-    def test_subscriber_providers_is_saved_in_an_attribute(self):
-        self.adapted.subscriber_providers = 'the value'
+    def test_possible_subscriber_providers_is_saved_in_an_attribute(self):
+        self.adapted.possible_subscriber_providers = 'the value'
         self.assertEquals(
-            self.context._newsletter_from_content_subscriber_providers,
+            self.context._newsletter_from_content_possible_subscriber_providers,
             'the value'
         )
 

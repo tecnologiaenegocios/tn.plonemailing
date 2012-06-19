@@ -21,7 +21,7 @@ import zope.interface
 NEWSLETTER_PROPERTIES_KEY = 'tn.plonemailing.newsletter-properties'
 
 @grok.provider(zope.schema.interfaces.IContextSourceBinder)
-def possibleSubscriberProviders(context):
+def possiblePossibleSubscriberProviders(context):
     terms        = []
     term_factory = zope.schema.vocabulary.SimpleVocabulary.createTerm
     identifiers  = [interfaces.IPossibleSubscriberProvider.__identifier__,
@@ -48,21 +48,21 @@ class INewsletterFromContent(form.Schema):
     form.fieldset(
         'newsletter',
         label=_(u'Newsletter'),
-        fields=('subscriber_providers',
+        fields=('possible_subscriber_providers',
                 'author_address',   'author_name',
                 'sender_address',   'sender_name',
                 'reply_to_address', 'reply_to_name',
                 'subject', 'last_sent'),
     )
 
-    form.widget(subscriber_providers=SequenceSelectFieldWidget)
-    subscriber_providers = z3c.relationfield.RelationList(
+    form.widget(possible_subscriber_providers=SequenceSelectFieldWidget)
+    possible_subscriber_providers = z3c.relationfield.RelationList(
         title=_(u'Subscriber providers'),
         description=_(u'The subscriber providers to which this content '
                       u'should be sent.'),
         required=False,
         value_type=z3c.relationfield.RelationChoice(
-            source=possibleSubscriberProviders
+            source=possiblePossibleSubscriberProviders
         )
     )
 
@@ -151,16 +151,16 @@ class NewsletterFromContent(object):
                                'reply_to_address', 'reply_to_name',
                                'subject')
 
-    # 'subscriber_providers' is implemented as an attribute, in order to allow
-    # cataloging by z3c.relationfield.
+    # 'possible_subscriber_providers' is implemented as an attribute, in order
+    # to allow cataloging by z3c.relationfield.
     @apply
-    def subscriber_providers():
+    def possible_subscriber_providers():
         def get(self):
             return getattr(self.context,
-                           '_newsletter_from_content_subscriber_providers',
+                           '_newsletter_from_content_possible_subscriber_providers',
                            [])
         def set(self, value):
-            self.context._newsletter_from_content_subscriber_providers = value
+            self.context._newsletter_from_content_possible_subscriber_providers = value
         return property(get, set)
 
     @property
@@ -252,9 +252,9 @@ class INewsletterFromContentMarker(IHasRelations,
     # although it being just a marker provided by the object on which the
     # behavior INewsletterFromContent is assigned, which in turn populates and
     # manages this field.
-    _newsletter_from_content_subscriber_providers = z3c.relationfield.RelationList(
+    _newsletter_from_content_possible_subscriber_providers = z3c.relationfield.RelationList(
         required=False,
         value_type=z3c.relationfield.RelationChoice(
-            source=possibleSubscriberProviders
+            source=possiblePossibleSubscriberProviders
         )
     )

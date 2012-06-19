@@ -45,7 +45,7 @@ class INewsletterHTML(zope.interface.Interface):
     html = zope.schema.Text(title=u'Body of the newsletter')
 
 
-class INewsletterAttributes(INewsletterHTML):
+class INewsletterAttributes(zope.interface.Interface):
     """Attributes that every newsletter should have.
     """
 
@@ -59,6 +59,8 @@ class INewsletterAttributes(INewsletterHTML):
     reply_to_name    = zope.schema.TextLine(required=False)
 
     subject = zope.schema.TextLine()
+
+    html = zope.schema.Text()
 
 
 class IPossibleNewsletterAttributes(zope.interface.Interface):

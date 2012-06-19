@@ -177,12 +177,12 @@ class IConfiguration(zope.interface.Interface):
     def check_preferences_html(obj):
         if obj.add_subscriber_preferences and not obj.subscriber_preferences_html:
             raise zope.interface.Invalid(
-                _(u'Must provide a removal HTML if a link for this is to be added.')
+                _(u'Must provide a preferences HTML if a link for this is to be added.')
             )
 
     @zope.interface.invariant
     def check_removal_html(obj):
         if obj.add_subscriber_removal and not obj.subscriber_removal_html:
             raise zope.interface.Invalid(
-                _(u'Must provide a preferences HTML if a link for this is to be added.')
+                _(u'Must provide a removal HTML if a link for this is to be added.')
             )

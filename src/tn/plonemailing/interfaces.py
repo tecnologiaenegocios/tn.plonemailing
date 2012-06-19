@@ -1,11 +1,23 @@
 from Products.MailHost import interfaces as mailhost_interfaces
 from tn.plonemailing import _
 
+import lxml.html
+import lxml.etree
 import zope.container.interfaces
 import zope.interface
 import zope.publisher.interfaces.browser
 import zope.schema
 import zope.sendmail
+
+
+def validate_html(value):
+    if not value:
+        raise zope.interface.Invalid(_(u'Cannot be empty'))
+    try:
+        lxml.html.fragment_fromstring(value)
+    except lxml.etree.LxmlError, e:
+        raise zope.interface.Invalid(unicode(e))
+    return True
 
 
 class ISubscriber(zope.interface.Interface):
@@ -143,6 +155,7 @@ class IConfiguration(zope.interface.Interface):
                       u'the preferences URL, this HTML code, '
                       u'which must contain an element selectable through the '
                       u'selector, will be used.'),
+        constraint=validate_html,
         required=False
     )
 
@@ -170,6 +183,7 @@ class IConfiguration(zope.interface.Interface):
         default=u'<p>To unsubscribe yourself from this mailing list access '
                 u'<a href="#" class="subscriber-removal">this link</a> and '
                 u'confirm your unsubscription.</p>',
+        constraint=validate_html,
         required=False
     )
 

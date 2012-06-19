@@ -1,6 +1,7 @@
 from plone.registry.interfaces import IRegistry
 from tn.plonemailing.global_configuration import Configuration
 from tn.plonemailing.interfaces import IConfiguration
+from tn.plonemailing.interfaces import validate_html
 from zope.app.testing import placelesssetup
 
 import unittest
@@ -66,3 +67,23 @@ class TestConfiguration(unittest.TestCase):
     def test_subscriber_removal_html_is_blank_if_none_in_registry(self):
         self.registry[config_prefix + 'subscriber_removal_html'] = None
         self.assertEquals(self.configuration.subscriber_removal_html, u'')
+
+
+class TestConfigurationHTMLValidation(unittest.TestCase):
+
+    def test_good_html_works_fine(self):
+        self.assertTrue(validate_html(u'<p></p>') is True)
+
+    def test_complains_with_empty_html(self):
+        self.assertRaises(
+            zope.interface.Invalid,
+            validate_html,
+            u''
+        )
+
+    def test_complains_with_multiple_elements_html(self):
+        self.assertRaises(
+            zope.interface.Invalid,
+            validate_html,
+            u'<p></p><p></p>'
+        )

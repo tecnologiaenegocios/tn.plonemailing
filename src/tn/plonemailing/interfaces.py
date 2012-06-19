@@ -189,6 +189,10 @@ class IConfiguration(zope.interface.Interface):
 
     @zope.interface.invariant
     def check_preferences_html(obj):
+        # Sometimes attributes which are not required are not even set in the
+        # received object (when using z3c.form).
+        if not hasattr(obj, 'subscriber_preferences_html'):
+            return
         if obj.add_subscriber_preferences and not obj.subscriber_preferences_html:
             raise zope.interface.Invalid(
                 _(u'Must provide a preferences HTML if a link for this is to be added.')
@@ -196,6 +200,10 @@ class IConfiguration(zope.interface.Interface):
 
     @zope.interface.invariant
     def check_removal_html(obj):
+        # Sometimes attributes which are not required are not even set in the
+        # received object (when using z3c.form).
+        if not hasattr(obj, 'subscriber_removal_html'):
+            return
         if obj.add_subscriber_removal and not obj.subscriber_removal_html:
             raise zope.interface.Invalid(
                 _(u'Must provide a removal HTML if a link for this is to be added.')

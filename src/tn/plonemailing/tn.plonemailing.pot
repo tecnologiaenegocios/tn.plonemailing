@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2012-06-18 23:02+0000\n"
+"POT-Creation-Date: 2012-06-19 00:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,11 +25,11 @@ msgstr ""
 msgid "Activate"
 msgstr ""
 
-#: ./interfaces.py:121
+#: ./interfaces.py:124
 msgid "Add subscriber preferences link"
 msgstr ""
 
-#: ./interfaces.py:142
+#: ./interfaces.py:148
 msgid "Add subscriber removal link"
 msgstr ""
 
@@ -93,11 +93,11 @@ msgstr ""
 msgid "HTML"
 msgstr ""
 
-#: ./interfaces.py:122
+#: ./interfaces.py:125
 msgid "If a link for subscriber preferences should be added to the end of generated newsletters."
 msgstr ""
 
-#: ./interfaces.py:143
+#: ./interfaces.py:149
 msgid "If a link for subscriber removal should be added to the end of generated newsletters."
 msgstr ""
 
@@ -105,8 +105,12 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-#: ./interfaces.py:135
-msgid "In the absense of an element under the selector for the URL, this text, which must contain an element selectable through the selector, will be used."
+#: ./interfaces.py:140
+msgid "In the absense of an element under the selector for the preferences URL, this HTML code, which must contain an element selectable through the selector, will be used."
+msgstr ""
+
+#: ./interfaces.py:164
+msgid "In the absense of an element under the selector for the removal URL, this HTML code, which must contain an element selectable through the selector, will be used."
 msgstr ""
 
 #: ./subscriber_list.py:222
@@ -115,6 +119,14 @@ msgstr ""
 
 #: ./subscriber_list.py:150
 msgid "Invalid line format."
+msgstr ""
+
+#: ./interfaces.py:185
+msgid "Must provide a preferences HTML if a link for this is to be added."
+msgstr ""
+
+#: ./interfaces.py:178
+msgid "Must provide a removal HTML if a link for this is to be added."
 msgstr ""
 
 #: ./subscriber_list.py:34
@@ -161,11 +173,11 @@ msgstr ""
 msgid "Subscriber name XPath selector"
 msgstr ""
 
-#: ./interfaces.py:134
+#: ./interfaces.py:139
 msgid "Subscriber preferences HTML"
 msgstr ""
 
-#: ./interfaces.py:127
+#: ./interfaces.py:131
 msgid "Subscriber preferences URL XPath selector"
 msgstr ""
 
@@ -173,16 +185,20 @@ msgstr ""
 msgid "Subscriber providers"
 msgstr ""
 
-#: ./interfaces.py:155
+#: ./interfaces.py:163
 msgid "Subscriber removal HTML"
 msgstr ""
 
-#: ./interfaces.py:148
+#: ./interfaces.py:155
 msgid "Subscriber removal URL XPath selector"
 msgstr ""
 
 #: ./subscriber_list_templates/csvimportform.pt:29
 msgid "Subscribers not imported"
+msgstr ""
+
+#: ./global_configuration.py:55
+msgid "TN Plone Mailing settings"
 msgstr ""
 
 #: ./subscriber.py:34
@@ -201,12 +217,16 @@ msgstr ""
 msgid "The e-mail address where replies should go to.  Leave blank to not set a reply address."
 msgstr ""
 
-#: ./interfaces.py:128
-msgid "The element whose "href" attribute will be replaced. This happens always, no matter if "Add subscriber preferences link" is checked."
+#: ./interfaces.py:132
+msgid "The element whose "href" attribute will be replaced. The replacement happens always, no matter if "Add subscriber preferences link" is checked."
 msgstr ""
 
-#: ./interfaces.py:149
-msgid "The element whose "href" attribute will be replaced. This happens always, no matter if "Add subscriber removal link" is checked."
+#: ./interfaces.py:156
+msgid "The element whose "href" attribute will be replaced. This replacement happens always, no matter if "Add subscriber removal link" is checked."
+msgstr ""
+
+#: ./interfaces.py:118
+msgid "The element whose text will replaced with the name of the subscriber."
 msgstr ""
 
 #: ./subscriber_list_templates/csvimportform.pt:20

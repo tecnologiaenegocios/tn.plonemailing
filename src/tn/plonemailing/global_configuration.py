@@ -1,10 +1,14 @@
 from five import grok
+from plone.app.registry.browser.controlpanel import ControlPanelFormWrapper
+from plone.app.registry.browser.controlpanel import RegistryEditForm
 from plone.registry.interfaces import IRegistry
+from Products.CMFPlone.interfaces import IPloneSiteRoot
+from tn.plonemailing import _
 from tn.plonemailing import interfaces
 from zope.component import getUtility
 
 
-class GlobalConfiguration(grok.GlobalUtility):
+class Configuration(grok.GlobalUtility):
     grok.implements(interfaces.IConfiguration)
 
     @property
@@ -37,3 +41,16 @@ class GlobalConfiguration(grok.GlobalUtility):
 
     def from_registry(self, key):
         return getUtility(IRegistry)['tn.plonemailing.' + key]
+
+
+class ControlPanelForm(RegistryEditForm):
+    schema = interfaces.IConfiguration
+
+
+class ControlPanelView(ControlPanelFormWrapper, grok.View):
+    grok.context(IPloneSiteRoot)
+    grok.require('cmf.ManagePortal')
+    grok.name('plonemailing-controlpanel')
+
+    label = _(u'TN Plone Mailing settings')
+    form = ControlPanelForm

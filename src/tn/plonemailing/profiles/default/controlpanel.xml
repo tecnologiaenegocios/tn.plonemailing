@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object
+    name="portal_controlpanel"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    i18n:domain="tn.plonemailing"
+    >
+
+  <configlet
+      title="TN Plone Mailing settings"
+      action_id="tn.plonemailing.settings"
+      appId="tn.plonemailing"
+      category="Products"
+      condition_expr=""
+      url_expr="string:${portal_url}/@@plonemailing-controlpanel"
+      icon_expr="string:${portal_url}/++resource++tn.plonemailing/controlpanel.png"
+      visible="True"
+      i18n:attributes="title"
+      >
+    <permission>Manage portal</permission>
+  </configlet>
+
+</object>

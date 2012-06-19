@@ -1,5 +1,5 @@
 from plone.registry.interfaces import IRegistry
-from tn.plonemailing.global_configuration import GlobalConfiguration
+from tn.plonemailing.global_configuration import Configuration
 from zope.app.testing import placelesssetup
 
 import unittest
@@ -13,7 +13,7 @@ class TestConfiguration(unittest.TestCase):
         placelesssetup.setUp(self)
         self.registry = dict()
         zope.component.provideUtility(self.registry, provides=IRegistry)
-        self.configuration = GlobalConfiguration()
+        self.configuration = Configuration()
 
     def tearDown(self):
         placelesssetup.tearDown()

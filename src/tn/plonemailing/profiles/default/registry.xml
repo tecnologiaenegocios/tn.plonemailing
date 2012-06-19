@@ -1,15 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <registry>
-  <records
-      interface="tn.plonemailing.interfaces.IConfiguration"
-      prefix="tn.plonemailing"
-      >
-    <value key="subscriber_name_xpath">//*[contains(concat(' ', @class, ' '), ' subscriber-name ')]</value>
-    <value key="add_subscriber_preferences">False</value>
-    <value key="subscriber_preferences_url_xpath">//a[contains(concat(' ', @class, ' '), ' subscriber-preferences ')]/@href</value>
-    <value key="subscriber_preferences_html"></value>
-    <value key="add_subscriber_removal">True</value>
-    <value key="subscriber_removal_url_xpath">//a[contains(concat(' ', @class, ' '), ' subscriber-removal ')]/@href</value>
-    <value key="subscriber_removal_html"><p>To unsubscribe yourself from this mailing list access <a href="#" class="subscriber-removal">this link</a> and confirm your unsubscription.</p></value>
-  </records>
+  <records interface="tn.plonemailing.interfaces.IConfiguration" />
 </registry>

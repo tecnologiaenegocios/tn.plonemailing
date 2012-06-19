@@ -113,48 +113,74 @@ class IConfiguration(zope.interface.Interface):
     """Main configuration of this package.
     """
 
-    subscriber_name_xpath = zope.schema.TextLine(
+    subscriber_name_xpath = zope.schema.SourceText(
         title=_(u'Subscriber name XPath selector'),
+        description=_(u'The element whose text will replaced with the name '
+                      u'of the subscriber.'),
+        default=u"//*[contains(concat(' ', @class, ' '), ' subscriber-name ')]",
     )
 
     add_subscriber_preferences = zope.schema.Bool(
         title=_(u'Add subscriber preferences link'),
         description=_(u'If a link for subscriber preferences should be '
                       u'added to the end of generated newsletters.'),
+        default=False,
     )
 
     subscriber_preferences_url_xpath = zope.schema.SourceText(
         title=_(u'Subscriber preferences URL XPath selector'),
         description=_(u'The element whose "href" attribute will be replaced. '
-                      u'This happens always, no matter if "Add subscriber '
-                      u'preferences link" is checked.'),
+                      u'The replacement happens always, no matter if '
+                      u'"Add subscriber preferences link" is checked.'),
+        default=u"//a[contains(concat(' ', @class, ' '), ' subscriber-preferences ')]/@href",
     )
 
     subscriber_preferences_html = zope.schema.SourceText(
         title=_(u'Subscriber preferences HTML'),
         description=_(u'In the absense of an element under the selector for '
-                      u'the URL, this text, '
+                      u'the preferences URL, this HTML code, '
                       u'which must contain an element selectable through the '
-                      u'selector, will be used.')
+                      u'selector, will be used.'),
+        required=False
     )
 
     add_subscriber_removal = zope.schema.Bool(
         title=_(u'Add subscriber removal link'),
         description=_(u'If a link for subscriber removal should be '
                       u'added to the end of generated newsletters.'),
+        default=True,
     )
 
     subscriber_removal_url_xpath = zope.schema.SourceText(
         title=_(u'Subscriber removal URL XPath selector'),
         description=_(u'The element whose "href" attribute will be replaced. '
-                      u'This happens always, no matter if "Add subscriber '
-                      u'removal link" is checked.'),
+                      u'This replacement happens always, no matter if '
+                      u'"Add subscriber removal link" is checked.'),
+        default=u"//a[contains(concat(' ', @class, ' '), ' subscriber-removal ')]/@href",
     )
 
     subscriber_removal_html = zope.schema.SourceText(
         title=_(u'Subscriber removal HTML'),
         description=_(u'In the absense of an element under the selector for '
-                      u'the URL, this text, '
+                      u'the removal URL, this HTML code, '
                       u'which must contain an element selectable through the '
-                      u'selector, will be used.')
+                      u'selector, will be used.'),
+        default=u'<p>To unsubscribe yourself from this mailing list access '
+                u'<a href="#" class="subscriber-removal">this link</a> and '
+                u'confirm your unsubscription.</p>',
+        required=False
     )
+
+    @zope.interface.invariant
+    def check_preferences_html(obj):
+        if obj.add_subscriber_preferences and not obj.subscriber_preferences_html:
+            raise zope.interface.Invalid(
+                _(u'Must provide a removal HTML if a link for this is to be added.')
+            )
+
+    @zope.interface.invariant
+    def check_removal_html(obj):
+        if obj.add_subscriber_removal and not obj.subscriber_removal_html:
+            raise zope.interface.Invalid(
+                _(u'Must provide a preferences HTML if a link for this is to be added.')
+            )

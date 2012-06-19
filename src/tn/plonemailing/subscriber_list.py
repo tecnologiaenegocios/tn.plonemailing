@@ -251,6 +251,8 @@ class SubscriberAdder(object):
 
     def set_activation(self, obj, activation, deactivation):
         if activation:
-            subscriber.activateSubscriber(obj, activation)
+            subscriber.activateSubscriber(obj, activation,
+                                          container=self.context)
         if deactivation:
-            subscriber.deactivateSubscriber(obj, deactivation)
+            subscriber.deactivateSubscriber(obj, deactivation,
+                                            container=self.context)

@@ -76,29 +76,38 @@ def checkEmailUniqueness(container, name, subscriber):
     raise Invalid(_(u'E-mail address is not unique in this folder.'))
 
 
-def activateSubscriber(subscriber, time=None):
+def activateSubscriber(subscriber, time=None, container=None):
     time = time or datetime.datetime.now()
     publication = metadata.IPublication(subscriber)
     publication.effective = time
-    notify_modified(subscriber, (metadata.IPublication, 'effective'))
+    notify_modified(subscriber, container,
+                    (metadata.IPublication, 'effective'))
 
 def getSubscriberActivation(subscriber):
     publication = metadata.IPublication(subscriber)
     return publication.effective
 
-def deactivateSubscriber(subscriber, time=None):
+def deactivateSubscriber(subscriber, time=None, container=None):
     time = time or datetime.datetime.now()
     publication = metadata.IPublication(subscriber)
     publication.expires = time
-    notify_modified(subscriber, (metadata.IPublication, 'expires'))
+    notify_modified(subscriber, container,
+                    (metadata.IPublication, 'expires'))
 
 def getSubscriberDeactivation(subscriber):
     publication = metadata.IPublication(subscriber)
     return publication.expires
 
-def notify_modified(subscriber, *interfaces_attributes):
+def notify_modified(subscriber, container=None, *interfaces_attributes):
     descriptions = [Attributes(params[0], *params[1:])
                     for params in interfaces_attributes]
+    # Some people may call stuff like .restrictedTraverse('@@some-view') in the
+    # subscriber object in an event hander, so wrap it in its container in
+    # order to make it provide .REQUEST through acquisition (otherwise
+    # .restrictedTraverse('@@some-view') will fail).  Of course we can do this
+    # only if we know the container on which this subscriber is being added.
+    if container is not None:
+        subscriber = subscriber.__of__(container)
     event = ObjectModifiedEvent(subscriber, *descriptions)
     notify(event)
 

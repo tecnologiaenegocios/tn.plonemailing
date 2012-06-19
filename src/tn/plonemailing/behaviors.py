@@ -52,7 +52,7 @@ class INewsletterFromContent(form.Schema):
                 'author_address',   'author_name',
                 'sender_address',   'sender_name',
                 'reply_to_address', 'reply_to_name',
-                'subject'),
+                'subject', 'last_sent'),
     )
 
     form.widget(subscriber_providers=SequenceSelectFieldWidget)
@@ -140,8 +140,8 @@ def add_annotations_properties(*names):
 class NewsletterFromContent(object):
     """Store newsletter properties in an annotation in the content object.
     """
-    zope.interface.implements(INewsletterFromContent)
     zope.component.adapts(IDublinCore)
+    zope.interface.implements(INewsletterFromContent)
 
     def __init__(self, context):
         self.context = context
@@ -215,6 +215,14 @@ class NewsletterAttributes(grok.Adapter):
     def html(self):
         return interfaces.INewsletterHTML(self.context).html
 
+    @apply
+    def last_sent():
+        def get(self):
+            return self.annotations.get('last_sent')
+        def set(self, value):
+            self.annotations['last_sent'] = value
+        return property(get, set)
+
     @memoize
     def mail_settings(self):
         portal = getToolByName(self.context, 'portal_url').getPortalObject()
@@ -223,6 +231,15 @@ class NewsletterAttributes(grok.Adapter):
     @memoize
     def behavior(self):
         return INewsletterFromContent(self.context)
+
+    @property
+    @memoize
+    def annotations(self):
+        annotations = IAnnotations(self.context)
+        values = annotations.get(NEWSLETTER_PROPERTIES_KEY, None)
+        if values is None:
+            values = annotations[NEWSLETTER_PROPERTIES_KEY] = PersistentDict()
+        return values
 
 
 class INewsletterFromContentMarker(IHasRelations,

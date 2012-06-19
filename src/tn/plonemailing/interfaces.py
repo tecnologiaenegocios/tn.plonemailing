@@ -74,6 +74,8 @@ class INewsletterAttributes(zope.interface.Interface):
 
     html = zope.schema.Text()
 
+    last_sent = zope.schema.Datetime(required=False)
+
 
 class IPossibleNewsletterAttributes(zope.interface.Interface):
     """Marker interface for objects which don't provide INewsletterAttributes

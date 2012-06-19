@@ -6,6 +6,7 @@ from zope.app.testing import placelesssetup
 from zope.schema.interfaces import ITitledTokenizedTerm
 from zope.schema.interfaces import IVocabularyTokenized
 
+import datetime
 import stubydoo
 import plone.app.controlpanel.mail
 import unittest
@@ -183,6 +184,15 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
             return self.behavior
         zope.component.provideAdapter(newsletter_from_content)
 
+        @zope.component.adapter(None)
+        @zope.interface.implementer(zope.annotation.interfaces.IAnnotations)
+        def annotations_adapter(context):
+            annotations = getattr(context, '_annotations', None)
+            if annotations is None:
+                context._annotations = dict()
+            return context._annotations
+        zope.component.provideAdapter(annotations_adapter)
+
         self.adapted = behaviors.NewsletterAttributes(self.context)
 
     def tearDown(self):
@@ -308,8 +318,8 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
     # Subject
 
     def test_uses_content_title_if_set_to_none_in_behavior(self):
-        self.behavior.subject = None
         self.context.title = u'The content title'
+        self.behavior.subject = None
         self.assertEquals(self.adapted.subject, u'The content title')
 
     def test_uses_content_title_if_set_to_blank_in_behavior(self):
@@ -324,6 +334,7 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
 
 
     # HTML
+
     def test_html_is_obtained_from_adapter(self):
         @zope.component.adapter(None)
         @zope.interface.implementer(interfaces.INewsletterHTML)
@@ -332,6 +343,24 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
         zope.component.provideAdapter(newsletter_html)
 
         self.assertEquals(self.adapted.html, u'The HTML code')
+
+
+    # Last sent
+
+    def test_last_sent_defaults_to_none(self):
+        self.assertTrue(self.adapted.last_sent is None)
+
+    def test_last_sent_can_be_directly(self):
+        a_datetime = datetime.datetime.now()
+        self.adapted.last_sent = a_datetime
+        self.assertEquals(self.adapted.last_sent, a_datetime)
+
+    def test_is_persisted(self):
+        a_datetime = datetime.datetime.now()
+        self.adapted.last_sent = a_datetime
+
+        new_adapted = behaviors.NewsletterAttributes(self.context)
+        self.assertEquals(new_adapted.last_sent, a_datetime)
 
 
 @stubydoo.assert_expectations

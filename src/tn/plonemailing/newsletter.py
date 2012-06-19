@@ -4,6 +4,7 @@ from zope.component import getMultiAdapter
 from zope.component import getUtility
 
 import inspect
+import lxml.etree
 import lxml.html
 import zope.globalrequest
 
@@ -84,7 +85,10 @@ class Newsletter(grok.MultiAdapter):
             return
         done = self._replace_xpath(html_tree, xpath, content)
         if not done and add:
-            user_tree = lxml.html.fromstring(user_html)
+            try:
+                user_tree = lxml.html.fromstring(user_html)
+            except lxml.etree.LxmlError:
+                return
             user_done = self._replace_xpath(user_tree, xpath, content)
             body = html_tree.xpath('//body')
             if user_done and body:

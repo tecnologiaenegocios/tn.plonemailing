@@ -146,10 +146,37 @@ class TestSubscriberPreferencesInterpolation(TestNewsletterInterpolations):
             u'</body></html>'
         )
 
-    def test_interpolation_without_placeholder_if_should_add_with_bad_html(self):
+    def test_interpolation_without_placeholder_if_should_add_with_wrong_html(self):
         self.configuration.add_subscriber_preferences = True
         self.configuration.subscriber_preferences_html = \
                 u'<p><a href="" class="other-class">Prefs</a></p>'
+
+        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+
+        message_html = self.newsletter.compile(self.subscriber)
+        self.assertEquals(message_html, self.newsletter_attributes.html)
+
+    def test_interpolation_without_placeholder_if_should_add_with_multiple_wrong_elements_html(self):
+        self.configuration.add_subscriber_preferences = True
+        self.configuration.subscriber_preferences_html = u'<p></p><p></p>'
+
+        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+
+        message_html = self.newsletter.compile(self.subscriber)
+        self.assertEquals(message_html, self.newsletter_attributes.html)
+
+    def test_interpolation_without_placeholder_if_should_add_with_bad_html(self):
+        self.configuration.add_subscriber_preferences = True
+        self.configuration.subscriber_preferences_html = u'bad html'
+
+        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+
+        message_html = self.newsletter.compile(self.subscriber)
+        self.assertEquals(message_html, self.newsletter_attributes.html)
+
+    def test_interpolation_without_placeholder_if_should_add_with_empty_html(self):
+        self.configuration.add_subscriber_preferences = True
+        self.configuration.subscriber_preferences_html = u''
 
         self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
 
@@ -219,10 +246,37 @@ class TestSubscriberRemovalInterpolation(TestNewsletterInterpolations):
             u'</body></html>'
         )
 
-    def test_interpolation_without_placeholder_if_should_add_with_bad_html(self):
+    def test_interpolation_without_placeholder_if_should_add_with_wrong_html(self):
         self.configuration.add_subscriber_removal = True
         self.configuration.subscriber_removal_html = \
                 u'<p><a href="" class="other-class">Unsubscribe</a></p>'
+
+        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+
+        message_html = self.newsletter.compile(self.subscriber)
+        self.assertEquals(message_html, self.newsletter_attributes.html)
+
+    def test_interpolation_without_placeholder_if_should_add_with_multiple_wrong_elements_html(self):
+        self.configuration.add_subscriber_removal = True
+        self.configuration.subscriber_removal_html = u'<p></p><p></p>'
+
+        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+
+        message_html = self.newsletter.compile(self.subscriber)
+        self.assertEquals(message_html, self.newsletter_attributes.html)
+
+    def test_interpolation_without_placeholder_if_should_add_with_multiple_bad_html(self):
+        self.configuration.add_subscriber_removal = True
+        self.configuration.subscriber_removal_html = u'<p></p><p></p>'
+
+        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+
+        message_html = self.newsletter.compile(self.subscriber)
+        self.assertEquals(message_html, self.newsletter_attributes.html)
+
+    def test_interpolation_without_placeholder_if_should_add_with_empty_html(self):
+        self.configuration.add_subscriber_removal = True
+        self.configuration.subscriber_removal_html = u'<p></p><p></p>'
 
         self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
 

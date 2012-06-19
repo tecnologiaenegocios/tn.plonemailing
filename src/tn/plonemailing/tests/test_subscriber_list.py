@@ -140,7 +140,8 @@ class TestSubscriberAdder(unittest.TestCase):
         self.adder.add('email', 'format', None, None)
 
     def test_add_should_set_subscriber_activation_date(self):
-        obj = stubydoo.double()
+        # Don't break if the subscriber is to be wrapped.
+        obj = stubydoo.double(__of__=lambda self, container: self)
         obj.id = 'the subscriber id'
 
         stubydoo.stub(self.add_form.extractData).\
@@ -154,7 +155,8 @@ class TestSubscriberAdder(unittest.TestCase):
                           self.parsed_datetime)
 
     def test_add_should_set_subscriber_deactivation_date(self):
-        obj = stubydoo.double()
+        # Don't break if the subscriber is to be wrapped.
+        obj = stubydoo.double(__of__=lambda self, container: self)
         obj.id = 'the subscriber id'
 
         stubydoo.stub(self.add_form.extractData).\

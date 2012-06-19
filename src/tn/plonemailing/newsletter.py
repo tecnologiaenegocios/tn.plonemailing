@@ -86,7 +86,7 @@ class Newsletter(grok.MultiAdapter):
         done = self._replace_xpath(html_tree, xpath, content)
         if not done and add:
             try:
-                user_tree = lxml.html.fromstring(user_html)
+                user_tree = lxml.html.fragment_fromstring(user_html)
             except lxml.etree.LxmlError:
                 return
             user_done = self._replace_xpath(user_tree, xpath, content)

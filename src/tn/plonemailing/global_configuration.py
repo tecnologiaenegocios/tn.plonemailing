@@ -8,6 +8,9 @@ from tn.plonemailing import interfaces
 from zope.component import getUtility
 
 
+config_prefix = interfaces.IConfiguration.__identifier__ + '.'
+
+
 class Configuration(grok.GlobalUtility):
     grok.implements(interfaces.IConfiguration)
 
@@ -40,7 +43,7 @@ class Configuration(grok.GlobalUtility):
         return self.from_registry('subscriber_removal_html') or u''
 
     def from_registry(self, key):
-        return getUtility(IRegistry)['tn.plonemailing.' + key]
+        return getUtility(IRegistry)[config_prefix + key]
 
 
 class ControlPanelForm(RegistryEditForm):

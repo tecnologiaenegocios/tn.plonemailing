@@ -16,17 +16,6 @@ import zope.intid
 import zope.component
 
 
-class CollectionIncluding(object):
-    """A matcher for collections including required values.
-    """
-    def __init__(self, *required_values):
-        self.required_values = set(required_values)
-    def __eq__(self, actual_values):
-        if isinstance(actual_values, CollectionIncluding):
-            return self.required_values == actual_values.required_values
-        return set(actual_values).issuperset(self.required_values)
-
-
 class IntIds(object):
     zope.interface.implements(zope.intid.interfaces.IIntIds)
     def getId(self, obj):
@@ -51,10 +40,7 @@ class TestPossibleSubscriberProviders(unittest.TestCase):
                                      Title=u'the title')
 
         stubydoo.stub(self.catalog.__call__).with_args(
-            object_provides=CollectionIncluding(
-                interfaces.ISubscriberProvider.__identifier__,
-                interfaces.IPossibleSubscriberProvider.__identifier__
-            )
+            object_provides=interfaces.IPossibleSubscriberProvider.__identifier__
         ).and_return([self.brain])
 
         behaviors.possiblePossibleSubscriberProviders(self.context)

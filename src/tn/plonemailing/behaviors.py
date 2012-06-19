@@ -24,11 +24,10 @@ NEWSLETTER_PROPERTIES_KEY = 'tn.plonemailing.newsletter-properties'
 def possiblePossibleSubscriberProviders(context):
     terms        = []
     term_factory = zope.schema.vocabulary.SimpleVocabulary.createTerm
-    identifiers  = [interfaces.IPossibleSubscriberProvider.__identifier__,
-                    interfaces.ISubscriberProvider.__identifier__]
+    identifier   = interfaces.IPossibleSubscriberProvider.__identifier__
     catalog      = getToolByName(context, 'portal_catalog')
     intids       = zope.component.getUtility(IIntIds)
-    for item in catalog(object_provides=identifiers):
+    for item in catalog(object_provides=identifier):
         obj = item.getObject()
         obj_id = intids.getId(obj)
         title = item.Title if isinstance(item.Title, unicode) \

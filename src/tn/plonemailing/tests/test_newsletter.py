@@ -2,7 +2,6 @@ from datetime import datetime
 from tn.plonemailing import newsletter
 from tn.plonemailing import interfaces
 from zope.app.testing import placelesssetup
-from zope.lifecycleevent import Attributes
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 import stubydoo

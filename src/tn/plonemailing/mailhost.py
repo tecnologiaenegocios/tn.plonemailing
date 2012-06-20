@@ -13,7 +13,7 @@ import zope.component
 def getMailHost():
     """Return the site's mailhost.
 
-    A marked mailhost instance (with interfaces.IMailHost) from the
+    A marked mailhost instance (with `interfaces.IMailHost`) from the
     site root is returned if found, fallback to the default mailhost
     utility.
 

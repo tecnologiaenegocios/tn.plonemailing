@@ -87,6 +87,10 @@ class INewsletter(INewsletterAttributes):
     """A template for producing a newsletter content for a given subscriber.
     """
 
+    context = zope.interface.Attribute(
+        u'The original content from which this newsletter was made.'
+    )
+
     def compile(subscriber):
         """Return an email.message.Message for the given subscriber.
         """
@@ -210,3 +214,45 @@ class IConfiguration(zope.interface.Interface):
             raise zope.interface.Invalid(
                 _(u'Must provide a removal HTML if a link for this is to be added.')
             )
+
+
+class INewsletterSentEvent(zope.interface.Interface):
+
+    newsletter = zope.interface.Attribute(u'The newsletter that was sent')
+    subscriber = zope.interface.Attribute(u'The subscriber')
+    message    = zope.interface.Attribute(u'The compilation result')
+
+
+class IMailing(zope.interface.Interface):
+    """A component which provides a simple API for deliveries.
+    """
+
+    def send(context, subscribers=None, suppress_events=False, mailhost=None):
+        """Send the context as a newsletter to the subscribers.
+
+        Subscribers are obtained from adaptation of the context to
+        `behaviors.INewsletterFromContent`, unless a list of
+        `ISubscriber` is provided.
+
+        A newsletter is obtained from the context by adapting it to
+        `INewsletter`.
+
+        For each subscriber the newsletter will be compiled and then
+        sent, using the default mailhost.  The mailhost can be
+        overriden using the `mailhost` parameter.
+
+        If `suppress_events` is `False`, a `INewsletterSentEvent` event
+        will be fired for each subscriber.
+        """
+
+    def iterSubscribers(context):
+        """Yield each subscriber of each subscriber provider from context.
+
+        `context` must be adaptable to `behaviors.INewsletterFromContent`.
+        """
+
+    def getMailHost():
+        """Default mailhost used for mass mailing.
+
+        See tn.plonemailing.mailhost.getMailHost.
+        """

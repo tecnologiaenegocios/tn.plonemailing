@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object name="portal_catalog">
+  <!-- Add index in setuphandlers.AddIndexes.  Indexes added here are
+       overwritten on reinstall.  Adding columns is fine. -->
+  <column value="last_sent" />
+</object>

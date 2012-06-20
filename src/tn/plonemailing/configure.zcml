@@ -38,6 +38,15 @@
       directory="resources"
       />
 
-  <adapter name="start" factory=".newsletter.getLastSent" />
+  <adapter name="last_sent" factory=".newsletter.getLastSent" />
+
+  <genericsetup:importStep
+      name="tn.plonemailing"
+      title="tn.plonemailing special import handlers"
+      description="Adds custom indexes and metadata"
+      handler=".setuphandlers.setupVarious"
+      >
+    <depends name="catalog" />
+  </genericsetup:importStep>
 
 </configure>

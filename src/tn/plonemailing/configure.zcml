@@ -38,4 +38,6 @@
       directory="resources"
       />
 
+  <adapter name="start" factory=".newsletter.getLastSent" />
+
 </configure>

@@ -379,3 +379,22 @@ class TestSetLastSent(unittest.TestCase):
         self.assertEquals(self.event.descriptions[0].attributes, ('last_sent',))
         self.assertTrue(self.event.descriptions[0].interface is
                         interfaces.INewsletterAttributes)
+
+
+@stubydoo.assert_expectations
+class TestGetLastSent(unittest.TestCase):
+
+    def runTest(self):
+        placelesssetup.setUp(self)
+
+        context = stubydoo.double()
+        adapted = stubydoo.double()
+
+        @zope.component.adapter(None)
+        @zope.interface.implementer(interfaces.INewsletterAttributes)
+        def newsletter_attributes_adapter(obj):
+            return adapted
+        zope.component.provideAdapter(newsletter_attributes_adapter)
+
+        adapted.last_sent = u'expected value'
+        self.assertEquals(newsletter.getLastSent(context)(), u'expected value')

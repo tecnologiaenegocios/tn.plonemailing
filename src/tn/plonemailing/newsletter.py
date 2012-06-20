@@ -1,5 +1,6 @@
 from datetime import datetime
 from five import grok
+from plone.indexer import indexer
 from tn.plonemailing import interfaces
 from zope.component import getMultiAdapter
 from zope.component import getUtility
@@ -128,3 +129,7 @@ def setLastSent(object, event):
     interfaces.INewsletterAttributes(object).last_sent = datetime.now()
     modification = Attributes(interfaces.INewsletterAttributes, 'last_sent')
     notify(ObjectModifiedEvent(object, modification))
+
+@indexer(interfaces.IPossibleNewsletterAttributes)
+def getLastSent(object):
+    return interfaces.INewsletterAttributes(object).last_sent

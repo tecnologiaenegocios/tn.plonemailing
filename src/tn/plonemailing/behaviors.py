@@ -51,7 +51,7 @@ class INewsletterFromContent(form.Schema):
                 'author_address',   'author_name',
                 'sender_address',   'sender_name',
                 'reply_to_address', 'reply_to_name',
-                'subject', 'last_sent'),
+                'subject'),
     )
 
     form.widget(possible_subscriber_providers=SequenceSelectFieldWidget)

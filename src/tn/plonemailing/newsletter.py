@@ -122,7 +122,8 @@ class Newsletter(grok.MultiAdapter):
         return done
 
 
-@grok.subscribe(None, interfaces.INewsletterSentEvent)
+@grok.subscribe(interfaces.IPossibleNewsletterAttributes,
+                interfaces.INewsletterSentEvent)
 def setLastSent(object, event):
     interfaces.INewsletterAttributes(object).last_sent = datetime.now()
     modification = Attributes(interfaces.INewsletterAttributes, 'last_sent')

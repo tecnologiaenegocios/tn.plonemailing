@@ -1,9 +1,17 @@
 from five import grok
+from Products.MailHost.interfaces import IMailHost
 from tn.plonemailing.behaviors import INewsletterFromContent
 from tn.plonemailing import interfaces
-from tn.plonemailing.mailhost import getMailHost
 from zope.component.event import dispatch
 from zope.event import notify
+
+try:
+    from zope.component.hooks import getSite
+    getSite # pyflakes
+except ImportError:
+    from zope.site.hooks import getSite
+
+import zope.component
 
 
 class NewsletterSentEvent(object):
@@ -42,4 +50,9 @@ class Mailing(grok.GlobalUtility):
                 yield subscriber
 
     def getMailHost(self):
-        return getMailHost()
+        site = getSite()
+        for id in site.objectIds():
+            candidate = site[id]
+            if interfaces.IMailHost.providedBy(candidate):
+                return candidate
+        return zope.component.getUtility(IMailHost)

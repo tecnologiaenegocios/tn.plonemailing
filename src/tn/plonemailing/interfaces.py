@@ -252,7 +252,15 @@ class IMailing(zope.interface.Interface):
         """
 
     def getMailHost():
-        """Default mailhost used for mass mailing.
+        """Return the site's mailhost.
 
-        See tn.plonemailing.mailhost.getMailHost.
+        A marked mailhost instance (with `interfaces.IMailHost`) from
+        the site root is returned if found, fallback to the default
+        mailhost utility.
+
+        A marked mailhost can then be targeted to mass mailing, keeping
+        the default mailhost utility for normal delivery.
+
+        This function can be quite expensive if the site root has a lot
+        of objects, but it shouldn't anyway.
         """

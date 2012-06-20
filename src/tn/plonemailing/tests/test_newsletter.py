@@ -1,10 +1,14 @@
+from datetime import datetime
 from tn.plonemailing import newsletter
 from tn.plonemailing import interfaces
 from zope.app.testing import placelesssetup
+from zope.lifecycleevent import Attributes
+from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 import stubydoo
 import unittest
 import zope.component
+import zope.interface
 
 
 class GlobalConfiguration(object):
@@ -337,3 +341,42 @@ class TestMessageCompilation(TestNewsletterInterpolations):
 
         self.assertEquals(self.newsletter.compile(self.subscriber),
                           'The resulting message')
+
+
+@stubydoo.assert_expectations
+class TestSetLastSent(unittest.TestCase):
+
+    def setUp(self):
+        placelesssetup.setUp(self)
+
+        self.context = stubydoo.double()
+        self.adapted = stubydoo.double()
+
+        # This is normally registered during application startup.
+        zope.component.provideHandler(zope.component.event.objectEventNotify)
+
+        @zope.component.adapter(None)
+        @zope.interface.implementer(interfaces.INewsletterAttributes)
+        def newsletter_attributes_adapter(context):
+            return self.adapted
+        zope.component.provideAdapter(newsletter_attributes_adapter)
+
+    def tearDown(self):
+        placelesssetup.tearDown()
+
+    def test_set_last_sent_date(self):
+        newsletter.setLastSent(self.context, stubydoo.double())
+        self.assertTrue(isinstance(self.adapted.last_sent, datetime))
+
+    def test_notify_modification(self):
+        @zope.component.adapter(None, IObjectModifiedEvent)
+        def handler(object, event):
+            self.object = object
+            self.event = event
+        zope.component.provideHandler(handler)
+
+        newsletter.setLastSent(self.context, stubydoo.double())
+        self.assertTrue(self.object is self.context)
+        self.assertEquals(self.event.descriptions[0].attributes, ('last_sent',))
+        self.assertTrue(self.event.descriptions[0].interface is
+                        interfaces.INewsletterAttributes)

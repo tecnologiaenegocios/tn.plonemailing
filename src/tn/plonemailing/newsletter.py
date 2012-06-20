@@ -1,7 +1,10 @@
+from datetime import datetime
 from five import grok
 from tn.plonemailing import interfaces
 from zope.component import getMultiAdapter
 from zope.component import getUtility
+from zope.event import notify
+from zope.lifecycleevent import Attributes, ObjectModifiedEvent
 
 import inspect
 import lxml.etree
@@ -117,3 +120,10 @@ class Newsletter(grok.MultiAdapter):
                         continue
 
         return done
+
+
+@grok.subscribe(None, interfaces.INewsletterSentEvent)
+def setLastSent(object, event):
+    interfaces.INewsletterAttributes(object).last_sent = datetime.now()
+    modification = Attributes(interfaces.INewsletterAttributes, 'last_sent')
+    notify(ObjectModifiedEvent(object, modification))

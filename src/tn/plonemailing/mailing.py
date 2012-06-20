@@ -2,7 +2,6 @@ from five import grok
 from Products.MailHost.interfaces import IMailHost
 from tn.plonemailing.behaviors import INewsletterFromContent
 from tn.plonemailing import interfaces
-from zope.component.event import dispatch
 from zope.event import notify
 
 try:
@@ -18,14 +17,10 @@ class NewsletterSentEvent(object):
     grok.implements(interfaces.INewsletterSentEvent)
 
     def __init__(self, newsletter, subscriber, message):
+        self.object     = newsletter.context
         self.newsletter = newsletter
         self.subscriber = subscriber
         self.message    = message
-
-
-@grok.subscribe(interfaces.INewsletterSentEvent)
-def dispatch_to_context(event):
-    dispatch(event.newsletter.context, event)
 
 
 class Mailing(grok.GlobalUtility):
@@ -33,14 +28,18 @@ class Mailing(grok.GlobalUtility):
     """
     grok.implements(interfaces.IMailing)
 
-    def send(self, context, subscribers=None, mailhost=None):
+    def send(self, context, suppress_events=False,
+             subscribers=None, mailhost=None):
+
         newsletter = interfaces.INewsletter(context)
-        mailhost = mailhost or self.getMailHost()
+        mailhost   = mailhost or self.getMailHost()
+
         subscribers = subscribers or self.iterSubscribers(context)
         for subscriber in subscribers:
             message = newsletter.compile(subscriber)
             mailhost.send(message)
-            notify(NewsletterSentEvent(newsletter, subscriber, message))
+            if not suppress_events:
+                notify(NewsletterSentEvent(newsletter, subscriber, message))
 
     def iterSubscribers(self, context):
         behavior = INewsletterFromContent(context)

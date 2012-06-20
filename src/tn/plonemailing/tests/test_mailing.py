@@ -72,6 +72,9 @@ class TestMailingBase(unittest.TestCase):
         zope.interface.alsoProvides(possible_subscriber_provider,
                                     interfaces.IPossibleSubscriberProvider)
 
+        # This is normally registered during application startup.
+        zope.component.provideHandler(zope.component.event.objectEventNotify)
+
 
 @stubydoo.assert_expectations
 class TestMailingSend(TestMailingBase):
@@ -95,16 +98,29 @@ class TestMailingSend(TestMailingBase):
             self.event  = event
         zope.component.provideHandler(handler)
 
-        # This is normally grokked during application startup.
-        zope.component.provideHandler(mailing.dispatch_to_context)
-
-        self.mailing.send(self.context, mailhost=self.mailhost,
+        self.mailing.send(self.context,
+                          mailhost=self.mailhost,
                           subscribers=self.subscribers)
 
-        self.assertTrue(self.object is self.context)
+        self.assertTrue(self.object           is self.context)
         self.assertTrue(self.event.newsletter is self.newsletter)
         self.assertTrue(self.event.subscriber is self.subscriber)
         self.assertTrue(self.event.message    is self.message)
+
+    def test_send_should_be_able_to_not_fire_event(self):
+        testpoint = stubydoo.double(event_called=lambda x:None)
+
+        @zope.component.adapter(None, interfaces.INewsletterSentEvent)
+        def handler(object, event):
+            testpoint.event_called()
+        zope.component.provideHandler(handler)
+
+        stubydoo.expect(testpoint.event_called).to_not_be_called
+
+        self.mailing.send(self.context,
+                          suppress_events=True,
+                          mailhost=self.mailhost,
+                          subscribers=self.subscribers)
 
 
 @stubydoo.assert_expectations

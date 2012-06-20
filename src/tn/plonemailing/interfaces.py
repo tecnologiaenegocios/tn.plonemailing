@@ -216,7 +216,12 @@ class IConfiguration(zope.interface.Interface):
             )
 
 
-class INewsletterSentEvent(zope.interface.Interface):
+class INewsletterSentEvent(zope.component.interfaces.IObjectEvent):
+    """An object event representing a sent newsletter.
+
+    The object attribute refer to the context which gave origin to the
+    newsletter.
+    """
 
     newsletter = zope.interface.Attribute(u'The newsletter that was sent')
     subscriber = zope.interface.Attribute(u'The subscriber')

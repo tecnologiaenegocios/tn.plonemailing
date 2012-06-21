@@ -382,19 +382,57 @@ class TestSetLastSent(unittest.TestCase):
 
 
 @stubydoo.assert_expectations
-class TestGetLastSent(unittest.TestCase):
+class TestGetSortableLastSent(unittest.TestCase):
 
-    def runTest(self):
+    def setUp(self):
         placelesssetup.setUp(self)
 
-        context = stubydoo.double()
-        adapted = stubydoo.double()
+        self.context = stubydoo.double()
+        self.adapted = stubydoo.double()
 
         @zope.component.adapter(None)
         @zope.interface.implementer(interfaces.INewsletterAttributes)
         def newsletter_attributes_adapter(obj):
-            return adapted
+            return self.adapted
         zope.component.provideAdapter(newsletter_attributes_adapter)
 
-        adapted.last_sent = u'expected value'
-        self.assertEquals(newsletter.getLastSent(context)(), u'expected value')
+    def tearDown(self):
+        placelesssetup.tearDown()
+
+    def test_returns_value_set_in_adapted_object(self):
+        self.adapted.last_sent = u'expected value'
+        self.assertEquals(newsletter.getSortableLastSent(self.context)(),
+                          u'expected value')
+
+    def test_returns_datetime_max_if_none_in_adapted_object(self):
+        self.adapted.last_sent = None
+        self.assertEquals(newsletter.getSortableLastSent(self.context)(),
+                          datetime.max)
+
+
+@stubydoo.assert_expectations
+class TestGetLastSent(unittest.TestCase):
+
+    def setUp(self):
+        placelesssetup.setUp(self)
+
+        self.context = stubydoo.double()
+        self.adapted = stubydoo.double()
+
+        @zope.component.adapter(None)
+        @zope.interface.implementer(interfaces.INewsletterAttributes)
+        def newsletter_attributes_adapter(obj):
+            return self.adapted
+        zope.component.provideAdapter(newsletter_attributes_adapter)
+
+    def tearDown(self):
+        placelesssetup.tearDown()
+
+    def test_returns_value_set_in_adapted_object(self):
+        self.adapted.last_sent = u'expected value'
+        self.assertEquals(newsletter.getLastSent(self.context)(),
+                          u'expected value')
+
+    def test_returns_none_if_none_in_adapted_object(self):
+        self.adapted.last_sent = None
+        self.assertEquals(newsletter.getLastSent(self.context)(), None)

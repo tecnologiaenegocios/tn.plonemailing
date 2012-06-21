@@ -131,5 +131,9 @@ def setLastSent(object, event):
     notify(ObjectModifiedEvent(object, modification))
 
 @indexer(interfaces.IPossibleNewsletterAttributes)
+def getSortableLastSent(object):
+    return interfaces.INewsletterAttributes(object).last_sent or datetime.max
+
+@indexer(interfaces.IPossibleNewsletterAttributes)
 def getLastSent(object):
     return interfaces.INewsletterAttributes(object).last_sent

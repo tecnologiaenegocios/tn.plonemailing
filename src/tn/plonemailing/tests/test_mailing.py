@@ -49,12 +49,15 @@ class TestMailingBase(unittest.TestCase):
     def configure_newsletter_from_content_behavior(self):
 
         possible_subscriber_provider = stubydoo.double()
+        possible_subscriber_provider_rel = stubydoo.double(
+            to_object=possible_subscriber_provider
+        )
 
         subscriber_provider = stubydoo.double(
             subscribers=lambda _self: self.subscribers
         )
         self.behavior = stubydoo.double(
-            possible_subscriber_providers=[possible_subscriber_provider]
+            possible_subscriber_providers=[possible_subscriber_provider_rel]
         )
 
         @zope.component.adapter(None)

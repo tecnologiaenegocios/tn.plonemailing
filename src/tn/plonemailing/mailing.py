@@ -44,7 +44,7 @@ class Mailing(grok.GlobalUtility):
     def iterSubscribers(self, context):
         behavior = INewsletterFromContent(context)
         for possible_provider in behavior.possible_subscriber_providers:
-            provider = interfaces.ISubscriberProvider(possible_provider)
+            provider = interfaces.ISubscriberProvider(possible_provider.to_object)
             for subscriber in provider.subscribers():
                 yield subscriber
 

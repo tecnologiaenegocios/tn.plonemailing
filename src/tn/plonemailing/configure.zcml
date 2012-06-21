@@ -15,14 +15,6 @@
 
   <grok:grok package="." />
 
-  <genericsetup:registerProfile
-      name="default"
-      title="TN Plone Mailing"
-      directory="profiles/default"
-      description="A Plone add-on for making newsletters"
-      provides="Products.GenericSetup.interfaces.EXTENSION"
-      />
-
   <interface interface=".interfaces.IMailHost" />
 
   <plone:behavior
@@ -47,6 +39,14 @@
       factory=".newsletter.getSortableLastSent"
       />
 
+  <genericsetup:registerProfile
+      name="default"
+      title="TN Plone Mailing"
+      directory="profiles/default"
+      description="A Plone add-on for making newsletters"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
   <genericsetup:importStep
       name="tn.plonemailing"
       title="tn.plonemailing special import handlers"
@@ -55,5 +55,15 @@
       >
     <depends name="catalog" />
   </genericsetup:importStep>
+
+  <genericsetup:upgradeStep
+      title="Add catalog and topic indexes"
+      description="Allows searching and sorting newsletters by last sent date"
+      source="1"
+      destination="2"
+      handler=".setuphandlers.addIndexesAndMetadata"
+      sortkey="1"
+      profile="tn.plonemailing:default"
+      />
 
 </configure>

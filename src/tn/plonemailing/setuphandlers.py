@@ -1,16 +1,19 @@
 from Products.CMFCore.utils import getToolByName
 from tn.plonemailing import _
 
+import logging
+
 
 def setupVarious(context):
     if context.readDataFile('tn.plonemailing.marker.txt') is None:
         return
-
     portal = context.getSite()
-    logger = context.getLogger('tn.plonemailing')
-    addIndexesAndMetadata(portal, logger)
+    addIndexesAndMetadata(portal, context.getLogger('tn.plonemailing'))
 
-def addIndexesAndMetadata(portal, logger):
+def addIndexesAndMetadata(context, logger=None):
+    portal = getToolByName(context, 'portal_url').getPortalObject()
+    if logger is None:
+        logger = logging.getLogger('tn.plonemailing')
     addIndexes(portal, logger)
     addIndexesAndMetadataToTopics(portal, logger)
 

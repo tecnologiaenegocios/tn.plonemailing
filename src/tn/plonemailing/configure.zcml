@@ -38,7 +38,14 @@
       directory="resources"
       />
 
-  <adapter name="last_sent" factory=".newsletter.getLastSent" />
+  <adapter
+      name="last_sent"
+      factory=".newsletter.getLastSent"
+      />
+  <adapter
+      name="sortable_last_sent"
+      factory=".newsletter.getSortableLastSent"
+      />
 
   <genericsetup:importStep
       name="tn.plonemailing"

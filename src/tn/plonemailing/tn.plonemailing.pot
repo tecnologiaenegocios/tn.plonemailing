@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2012-06-19 00:28+0000\n"
+"POT-Creation-Date: 2012-06-21 00:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,15 +21,15 @@ msgstr ""
 msgid "A short summary"
 msgstr ""
 
-#: ./subscriber.py:154
+#: ./subscriber.py:163
 msgid "Activate"
 msgstr ""
 
-#: ./interfaces.py:124
+#: ./interfaces.py:144
 msgid "Add subscriber preferences link"
 msgstr ""
 
-#: ./interfaces.py:148
+#: ./interfaces.py:169
 msgid "Add subscriber removal link"
 msgstr ""
 
@@ -37,11 +37,11 @@ msgstr ""
 msgid "All subscribers imported."
 msgstr ""
 
-#: ./behaviors.py:70
+#: ./behaviors.py:69
 msgid "Author e-mail address"
 msgstr ""
 
-#: ./behaviors.py:78
+#: ./behaviors.py:77
 msgid "Author name"
 msgstr ""
 
@@ -53,7 +53,11 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: ./subscriber.py:194
+#: ./interfaces.py:15
+msgid "Cannot be empty"
+msgstr ""
+
+#: ./subscriber.py:203
 msgid "Deactivate"
 msgstr ""
 
@@ -93,11 +97,11 @@ msgstr ""
 msgid "HTML"
 msgstr ""
 
-#: ./interfaces.py:125
+#: ./interfaces.py:145
 msgid "If a link for subscriber preferences should be added to the end of generated newsletters."
 msgstr ""
 
-#: ./interfaces.py:149
+#: ./interfaces.py:170
 msgid "If a link for subscriber removal should be added to the end of generated newsletters."
 msgstr ""
 
@@ -105,11 +109,11 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
-#: ./interfaces.py:140
+#: ./interfaces.py:160
 msgid "In the absense of an element under the selector for the preferences URL, this HTML code, which must contain an element selectable through the selector, will be used."
 msgstr ""
 
-#: ./interfaces.py:164
+#: ./interfaces.py:185
 msgid "In the absense of an element under the selector for the removal URL, this HTML code, which must contain an element selectable through the selector, will be used."
 msgstr ""
 
@@ -121,11 +125,15 @@ msgstr ""
 msgid "Invalid line format."
 msgstr ""
 
-#: ./interfaces.py:185
+#: ./setuphandlers.py:34
+msgid "Issue date"
+msgstr ""
+
+#: ./interfaces.py:204
 msgid "Must provide a preferences HTML if a link for this is to be added."
 msgstr ""
 
-#: ./interfaces.py:178
+#: ./interfaces.py:215
 msgid "Must provide a removal HTML if a link for this is to be added."
 msgstr ""
 
@@ -133,7 +141,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: ./behaviors.py:50
+#: ./behaviors.py:49
 msgid "Newsletter"
 msgstr ""
 
@@ -145,11 +153,11 @@ msgstr ""
 msgid "One or more subscribers could not be imported."
 msgstr ""
 
-#: ./behaviors.py:104
+#: ./behaviors.py:103
 msgid "Reply e-mail address"
 msgstr ""
 
-#: ./behaviors.py:112
+#: ./behaviors.py:111
 msgid "Reply person name"
 msgstr ""
 
@@ -157,39 +165,39 @@ msgstr ""
 msgid "Row number"
 msgstr ""
 
-#: ./behaviors.py:86
+#: ./behaviors.py:85
 msgid "Sender e-mail address"
 msgstr ""
 
-#: ./behaviors.py:97
+#: ./behaviors.py:96
 msgid "Sender name"
 msgstr ""
 
-#: ./behaviors.py:118
+#: ./behaviors.py:117
 msgid "Subject"
 msgstr ""
 
-#: ./interfaces.py:117
+#: ./interfaces.py:137
 msgid "Subscriber name XPath selector"
 msgstr ""
 
-#: ./interfaces.py:139
+#: ./interfaces.py:159
 msgid "Subscriber preferences HTML"
 msgstr ""
 
-#: ./interfaces.py:131
+#: ./interfaces.py:151
 msgid "Subscriber preferences URL XPath selector"
 msgstr ""
 
-#: ./behaviors.py:60
+#: ./behaviors.py:59
 msgid "Subscriber providers"
 msgstr ""
 
-#: ./interfaces.py:163
+#: ./interfaces.py:184
 msgid "Subscriber removal HTML"
 msgstr ""
 
-#: ./interfaces.py:155
+#: ./interfaces.py:176
 msgid "Subscriber removal URL XPath selector"
 msgstr ""
 
@@ -197,7 +205,8 @@ msgstr ""
 msgid "Subscribers not imported"
 msgstr ""
 
-#: ./global_configuration.py:55
+#: ./global_configuration.py:58
+#: ./profiles/default/controlpanel.xml
 msgid "TN Plone Mailing settings"
 msgstr ""
 
@@ -205,27 +214,27 @@ msgstr ""
 msgid "Text"
 msgstr ""
 
-#: ./behaviors.py:71
+#: ./behaviors.py:70
 msgid "The e-mail address of the author of the newsletter.  If none is provided, the address set as the site's contact form address will be used."
 msgstr ""
 
-#: ./behaviors.py:87
-msgid "The e-mail address of the sender of the newsletter.  This should match the authentication address used to send the newsletter (otherwise you may have delivery problems for some subscribers).  If none is provided, the "Author e-mail address" is used."
+#: ./behaviors.py:86
+msgid "The e-mail address of the sender of the newsletter.  This should match the authentication address used to send the newsletter (otherwise you may have delivery problems for some subscribers).  If none is provided, the \"Author e-mail address\" is used."
 msgstr ""
 
-#: ./behaviors.py:105
+#: ./behaviors.py:104
 msgid "The e-mail address where replies should go to.  Leave blank to not set a reply address."
 msgstr ""
 
-#: ./interfaces.py:132
-msgid "The element whose "href" attribute will be replaced. The replacement happens always, no matter if "Add subscriber preferences link" is checked."
+#: ./interfaces.py:152
+msgid "The element whose \"href\" attribute will be replaced. The replacement happens always, no matter if \"Add subscriber preferences link\" is checked."
 msgstr ""
 
-#: ./interfaces.py:156
-msgid "The element whose "href" attribute will be replaced. This replacement happens always, no matter if "Add subscriber removal link" is checked."
+#: ./interfaces.py:177
+msgid "The element whose \"href\" attribute will be replaced. This replacement happens always, no matter if \"Add subscriber removal link\" is checked."
 msgstr ""
 
-#: ./interfaces.py:118
+#: ./interfaces.py:138
 msgid "The element whose text will replaced with the name of the subscriber."
 msgstr ""
 
@@ -233,57 +242,61 @@ msgstr ""
 msgid "The following subscribers could not be imported:"
 msgstr ""
 
-#: ./behaviors.py:79
+#: ./behaviors.py:78
 msgid "The name of the author of the newsletter.  This is the name which will appear in the in the mailbox of the subscriber."
 msgstr ""
 
-#: ./behaviors.py:113
+#: ./behaviors.py:112
 msgid "The name of the person whom replies should go to."
 msgstr ""
 
-#: ./behaviors.py:98
-msgid "The name of the sender of the newsletter.  If none is provided, the "Author name" is used."
+#: ./behaviors.py:97
+msgid "The name of the sender of the newsletter.  If none is provided, the \"Author name\" is used."
 msgstr ""
 
-#: ./behaviors.py:119
+#: ./behaviors.py:118
 msgid "The subject of the newsletter.  If none is provided the title of the content is used."
 msgstr ""
 
-#: ./behaviors.py:61
+#: ./behaviors.py:60
 msgid "The subscriber providers to which this content should be sent."
 msgstr ""
 
+#: ./setuphandlers.py:35
+msgid "The time and date an item was last sent"
+msgstr ""
+
 #: ./subscriber_list.py:86
-msgid "Use this form to input a batch of subscribers (without confirmation). Provide a CSV table with columns email and format ("html" or "text"), in this order, without headers.  Optionally, you can add one more column to inform an deactivation date for the subscriber.  Also, a fourth column may be added to indicate an activation date."
+msgid "Use this form to input a batch of subscribers (without confirmation). Provide a CSV table with columns email and format (\"html\" or \"text\"), in this order, without headers.  Optionally, you can add one more column to inform an deactivation date for the subscriber.  Also, a fourth column may be added to indicate an activation date."
 msgstr ""
 
 #. Default: "Please confirm subscription in ${list_title} list."
-#: ./subscriber.py:146
+#: ./subscriber.py:155
 msgid "activate_subscriber_description_message"
 msgstr ""
 
 #. Default: "Subscription confirmation for ${email}"
-#: ./subscriber.py:140
+#: ./subscriber.py:149
 msgid "activate_subscriber_title_message"
 msgstr ""
 
 #. Default: "Please confirm removal from ${list_title} list."
-#: ./subscriber.py:186
+#: ./subscriber.py:195
 msgid "deactivate_subscriber_description_message"
 msgstr ""
 
 #. Default: "Removal confirmation for ${email}"
-#: ./subscriber.py:180
+#: ./subscriber.py:189
 msgid "deactivate_subscriber_title_message"
 msgstr ""
 
 #. Default: "Subscription of ${email} has been confirmed."
-#: ./subscriber.py:163
+#: ./subscriber.py:172
 msgid "subscription_confirmed"
 msgstr ""
 
 #. Default: "Removal of ${email} from list ${list} has been confirmed."
-#: ./subscriber.py:203
+#: ./subscriber.py:212
 msgid "subscription_removal_confirmed"
 msgstr ""
 

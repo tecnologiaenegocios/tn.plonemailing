@@ -31,5 +31,7 @@ def addIndexes(portal, logger):
 
 def addIndexesAndMetadataToTopics(portal, logger):
     atcttool = getToolByName(portal, 'portal_atct')
-    atcttool.addIndex('last_sent', _(u'Last sent'), enabled=True)
-    atcttool.addMetadata('last_sent', _(u'Last sent'), enabled=True)
+    title = _(u'Issue date')
+    desc  = _(u'The time and date an item was last sent')
+    atcttool.addIndex('last_sent', title, description=desc, enabled=True)
+    atcttool.addMetadata('last_sent', title, description=desc, enabled=True)

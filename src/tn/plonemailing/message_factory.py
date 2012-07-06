@@ -129,8 +129,8 @@ def extract_sender(message):
     if message['From']:
         addresses.extend(extract_addresses(message['From']))
 
-    if len(addresses) != 1:
-        raise ValueError('No single sender found in message.')
+    if not addresses:
+        raise ValueError('No valid sender found in message.')
 
     return addresses[0]
 

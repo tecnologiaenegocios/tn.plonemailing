@@ -235,7 +235,7 @@ msgid "The element whose \"href\" attribute will be replaced. This replacement h
 msgstr ""
 
 #: ./interfaces.py:138
-msgid "The element whose text will replaced with the name of the subscriber."
+msgid "The element whose text will be replaced with the name of the subscriber."
 msgstr ""
 
 #: ./subscriber_list_templates/csvimportform.pt:20

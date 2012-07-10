@@ -135,7 +135,7 @@ class IConfiguration(zope.interface.Interface):
 
     subscriber_name_xpath = zope.schema.SourceText(
         title=_(u'Subscriber name XPath selector'),
-        description=_(u'The element whose text will replaced with the name '
+        description=_(u'The element whose text will be replaced with the name '
                       u'of the subscriber.'),
         default=u"//*[contains(concat(' ', @class, ' '), ' subscriber-name ')]",
     )

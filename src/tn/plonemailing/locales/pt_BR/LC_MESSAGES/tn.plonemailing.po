@@ -235,7 +235,7 @@ msgid "The element whose \"href\" attribute will be replaced. This replacement h
 msgstr "O elemento cujo atributo \"href\" será substituído.  A substituição ocorre sempre, não importa se \"Adicionar link de descadastramento do inscrito\" está marcado."
 
 #: ./interfaces.py:138
-msgid "The element whose text will replaced with the name of the subscriber."
+msgid "The element whose text will be replaced with the name of the subscriber."
 msgstr "O elemento cujo texto será substituído pelo nome do inscrito."
 
 #: ./subscriber_list_templates/csvimportform.pt:20

@@ -38,11 +38,13 @@ class ISubscriberProvider(zope.interface.Interface):
     """A subscriber provider.
     """
 
-    def subscribers():
+    subscribers = zope.interface.Attribute(
+        'Subscribers',
         """An interable or iterator of the provided subscribers.
 
         Each value returned or yielded must be an ISubscriber.
         """
+    )
 
 
 class IPossibleSubscriberProvider(zope.interface.Interface):

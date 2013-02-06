@@ -45,7 +45,7 @@ class Mailing(grok.GlobalUtility):
         behavior = INewsletterFromContent(context)
         for possible_provider in behavior.possible_subscriber_providers:
             provider = interfaces.ISubscriberProvider(possible_provider.to_object)
-            for subscriber in provider.subscribers():
+            for subscriber in provider.subscribers:
                 yield subscriber
 
     def getMailHost(self):

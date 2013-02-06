@@ -48,6 +48,7 @@ class SubscriberProvider(grok.Adapter):
     grok.context(ISubscriberListSchema)
     grok.implements(interfaces.ISubscriberProvider)
 
+    @property
     def subscribers(self):
         catalog = getToolByName(self.context, 'portal_catalog')
         items = catalog(

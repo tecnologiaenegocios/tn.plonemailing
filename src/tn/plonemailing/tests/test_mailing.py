@@ -53,9 +53,7 @@ class TestMailingBase(unittest.TestCase):
             to_object=possible_subscriber_provider
         )
 
-        subscriber_provider = stubydoo.double(
-            subscribers=lambda _self: self.subscribers
-        )
+        subscriber_provider = stubydoo.double(subscribers=self.subscribers)
         self.behavior = stubydoo.double(
             possible_subscriber_providers=[possible_subscriber_provider_rel]
         )

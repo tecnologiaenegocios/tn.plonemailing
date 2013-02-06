@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+from Products.CMFCore.utils import getToolByName
 from tn.plonemailing import behaviors
 from tn.plonemailing import interfaces
 from zope.app.testing import placelesssetup
@@ -43,10 +44,13 @@ class TestPossibleSubscriberProviders(unittest.TestCase):
             object_provides=interfaces.IPossibleSubscriberProvider.__identifier__
         ).and_return([self.brain])
 
-        behaviors.possiblePossibleSubscriberProviders(self.context)
+        self.original_getToolByName_code = getToolByName.func_code
+        getToolByName_stup = lambda context, name: getattr(context, name)
+        getToolByName.func_code = getToolByName_stup.func_code
 
     def tearDown(self):
         placelesssetup.tearDown()
+        getToolByName.func_code = self.original_getToolByName_code
 
     def test_vocabulary_is_returned(self):
         vocabulary = behaviors.possiblePossibleSubscriberProviders(self.context)
@@ -182,8 +186,13 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
 
         self.adapted = behaviors.NewsletterAttributes(self.context)
 
+        self.original_getToolByName_code = getToolByName.func_code
+        getToolByName_stup = lambda context, name: getattr(context, name)
+        getToolByName.func_code = getToolByName_stup.func_code
+
     def tearDown(self):
         placelesssetup.tearDown()
+        getToolByName.func_code = self.original_getToolByName_code
 
     def test_resulting_object_formally_provides_newsletter_attributes(self):
         self.assertTrue(

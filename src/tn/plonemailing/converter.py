@@ -1,42 +1,44 @@
 from five import grok
 from htmlentitydefs import entitydefs
-from plone.intelligenttext.transforms import convertHtmlToWebIntelligentPlainText
+from plone.intelligenttext.transforms import \
+    convertHtmlToWebIntelligentPlainText
 from tn.plonemailing import interfaces
 
 import lxml.html
 import re
 
-links_with_href_re = re.compile(r'(?m)<a([^<]+)href="([^<"]+)"([^<]*)>([^<]+)<\/a>',
-                                re.IGNORECASE)
+links_with_href_re = re.compile(
+    r'(?m)<a([^<]+)href="([^<"]+)"([^<]*)>([^<]+)<\/a>',
+    re.IGNORECASE
+)
 
 
-class HTMLConverter(grok.MultiAdapter):
-    grok.adapts(None, None, interfaces.INewsletter)
-    grok.implements(interfaces.IConverter)
-    grok.name('html')
+class NullContentConversion(object):
+    grok.implements(interfaces.IContentConversion)
 
-    content_type = 'text/html'
+    def __init__(self, content_type):
+        self.content_type = content_type
 
-    def __init__(self, context, request, newsletter):
-        self.context    = context
-        self.request    = request
-        self.newsletter = newsletter
-
-    def convert(self, html):
-        return html
+    def apply(self, original_content):
+        return original_content
 
 
-class TextConverter(grok.MultiAdapter):
-    grok.adapts(None, None, interfaces.INewsletter)
-    grok.implements(interfaces.IConverter)
-    grok.name('text')
+@grok.adapter(None, None, interfaces.INewsletter, name=u'html')
+@grok.implementer(interfaces.IContentConversion)
+def get_html_content_conversion(context, request, newsletter):
+    return NullContentConversion('text/html')
+
+
+@grok.adapter(None, None, interfaces.INewsletter, name=u'text')
+@grok.implementer(interfaces.IContentConversion)
+def get_text_content_conversion(context, request, newsletter):
+    return text_content_conversion
+
+
+class TextContentConversion(object):
+    grok.implements(interfaces.IContentConversion)
 
     content_type = 'text/plain'
-
-    def __init__(self, context, request, newsletter):
-        self.context    = context
-        self.request    = request
-        self.newsletter = newsletter
 
     def convert(self, html):
         html = lxml.html.document_fromstring(html)
@@ -54,7 +56,7 @@ class TextConverter(grok.MultiAdapter):
         body = self._expand_links(body)
 
         return convertHtmlToWebIntelligentPlainText(body.encode('utf-8')).\
-                decode('utf-8')
+            decode('utf-8')
 
     def _expand_entities(self, body):
         body = body.replace('&nbsp;', ' ')
@@ -77,3 +79,6 @@ class TextConverter(grok.MultiAdapter):
                                                          match.group(2))
             return match.group()
         return links_with_href_re.sub(replace, body)
+
+
+text_content_conversion = TextContentConversion()

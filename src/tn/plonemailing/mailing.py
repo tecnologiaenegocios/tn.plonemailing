@@ -32,23 +32,24 @@ class Mailing(grok.GlobalUtility):
              subscribers=None, mailhost=None):
 
         newsletter = interfaces.INewsletter(context)
-        mailhost   = mailhost or self.getMailHost()
+        mailhost   = mailhost or self.get_mail_host()
 
-        subscribers = subscribers or self.iterSubscribers(context)
+        subscribers = subscribers or self.iter_subscribers(context)
         for subscriber in subscribers:
             message = newsletter.compile(subscriber)
             mailhost.send(message)
             if not suppress_events:
                 notify(NewsletterSentEvent(newsletter, subscriber, message))
 
-    def iterSubscribers(self, context):
+    def iter_subscribers(self, context):
         behavior = INewsletterFromContent(context)
         for possible_provider in behavior.possible_subscriber_providers:
-            provider = interfaces.ISubscriberProvider(possible_provider.to_object)
+            obj = possible_provider.to_object
+            provider = interfaces.ISubscriberProvider(obj)
             for subscriber in provider.subscribers:
                 yield subscriber
 
-    def getMailHost(self):
+    def get_mail_host(self):
         site = getSite()
         for id in site.objectIds():
             candidate = site[id]

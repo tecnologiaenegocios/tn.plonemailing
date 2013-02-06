@@ -51,8 +51,11 @@ class Newsletter(grok.MultiAdapter):
 
     def compile(self, subscriber):
         html = self._interpolate(subscriber)
-        factory = getMultiAdapter((self.context, self.request, self, subscriber),
-                                  interfaces.IMessageFactory)
+        factory = getMultiAdapter(
+            (self.context, self.request, self, subscriber),
+            interfaces.IMessageFactory,
+            name=subscriber.format
+        )
         return factory(html)
 
     def _interpolate(self, subscriber):

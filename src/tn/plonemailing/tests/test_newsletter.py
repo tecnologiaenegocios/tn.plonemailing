@@ -12,6 +12,7 @@ import zope.interface
 
 class GlobalConfiguration(object):
     zope.interface.implements(interfaces.IConfiguration)
+
     def __init__(self, **kw):
         for attr, value in kw.items():
             setattr(self, attr, value)
@@ -72,6 +73,7 @@ class TestNewsletterInterpolations(TestNewsletter):
             name=u'',
             preferences_url=u'',
             removal_url=u'',
+            format=u'',
         )
 
 
@@ -80,11 +82,12 @@ class TestSubscriberNameInterpolation(TestNewsletterInterpolations):
     def setUp(self):
         super(TestSubscriberNameInterpolation, self).setUp()
         self.configuration.subscriber_name_xpath = \
-                "//*[contains(concat(' ', @class, ' '), ' subscriber-name ')]"
+            "//*[contains(concat(' ', @class, ' '), ' subscriber-name ')]"
         self.subscriber.name = u'Name'
 
     def test_interpolation_without_placeholder(self):
-        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+        self.newsletter_attributes.html = \
+            u"<html><body><p>Test</p></body></html>"
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(message_html, self.newsletter_attributes.html)
 
@@ -96,14 +99,14 @@ class TestSubscriberNameInterpolation(TestNewsletterInterpolations):
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(
             message_html,
-            u'<html><body>'\
-            u'<p>Welcome, <span class="subscriber-name">Name</span></p>'\
+            u'<html><body>'
+            u'<p>Welcome, <span class="subscriber-name">Name</span></p>'
             u'</body></html>'
         )
 
     def test_interpolation_honors_configuration(self):
         self.configuration.subscriber_name_xpath = \
-                "//em[contains(concat(' ', @class, ' '), ' customer-name ')]"
+            "//em[contains(concat(' ', @class, ' '), ' customer-name ')]"
 
         self.newsletter_attributes.html = u'<html><body>'\
             u'<p>Welcome, <em class="customer-name">John Doe</em></p>'\
@@ -112,8 +115,8 @@ class TestSubscriberNameInterpolation(TestNewsletterInterpolations):
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(
             message_html,
-            u'<html><body>'\
-            u'<p>Welcome, <em class="customer-name">Name</em></p>'\
+            u'<html><body>'
+            u'<p>Welcome, <em class="customer-name">Name</em></p>'
             u'</body></html>'
         )
 
@@ -123,38 +126,41 @@ class TestSubscriberPreferencesInterpolation(TestNewsletterInterpolations):
     def setUp(self):
         super(TestSubscriberPreferencesInterpolation, self).setUp()
         self.configuration.subscriber_preferences_url_xpath = \
-                "//a[contains(concat(' ', @class, ' '), ' subscriber-preferences ')]/@href"
+            "//a[contains(concat(' ', @class, ' '), ' subscriber-preferences ')]/@href"
         self.subscriber.preferences_url = u'http://example.com/prefs'
 
     def test_interpolation_without_placeholder_if_should_not_add(self):
         self.configuration.add_subscriber_preferences = False
-        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+        self.newsletter_attributes.html = \
+            u"<html><body><p>Test</p></body></html>"
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(message_html, self.newsletter_attributes.html)
 
     def test_interpolation_without_placeholder_if_should_add(self):
         self.configuration.add_subscriber_preferences = True
         self.configuration.subscriber_preferences_html = \
-                u'<p><a href="" class="subscriber-preferences">Prefs</a></p>'
+            u'<p><a href="" class="subscriber-preferences">Prefs</a></p>'
 
-        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+        self.newsletter_attributes.html = \
+            u"<html><body><p>Test</p></body></html>"
 
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(
             message_html,
-            u'<html><body>'\
-            u'<p>Test</p>'\
-            u'<p><a href="http://example.com/prefs" '\
-            u'class="subscriber-preferences">Prefs</a></p>'\
+            u'<html><body>'
+            u'<p>Test</p>'
+            u'<p><a href="http://example.com/prefs" '
+            u'class="subscriber-preferences">Prefs</a></p>'
             u'</body></html>'
         )
 
     def test_interpolation_without_placeholder_if_should_add_with_wrong_html(self):
         self.configuration.add_subscriber_preferences = True
         self.configuration.subscriber_preferences_html = \
-                u'<p><a href="" class="other-class">Prefs</a></p>'
+            u'<p><a href="" class="other-class">Prefs</a></p>'
 
-        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+        self.newsletter_attributes.html = \
+            u"<html><body><p>Test</p></body></html>"
 
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(message_html, self.newsletter_attributes.html)
@@ -163,7 +169,8 @@ class TestSubscriberPreferencesInterpolation(TestNewsletterInterpolations):
         self.configuration.add_subscriber_preferences = True
         self.configuration.subscriber_preferences_html = u'<p></p><p></p>'
 
-        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+        self.newsletter_attributes.html = \
+            u"<html><body><p>Test</p></body></html>"
 
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(message_html, self.newsletter_attributes.html)
@@ -172,7 +179,8 @@ class TestSubscriberPreferencesInterpolation(TestNewsletterInterpolations):
         self.configuration.add_subscriber_preferences = True
         self.configuration.subscriber_preferences_html = u'bad html'
 
-        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+        self.newsletter_attributes.html = \
+            u"<html><body><p>Test</p></body></html>"
 
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(message_html, self.newsletter_attributes.html)
@@ -181,7 +189,8 @@ class TestSubscriberPreferencesInterpolation(TestNewsletterInterpolations):
         self.configuration.add_subscriber_preferences = True
         self.configuration.subscriber_preferences_html = u''
 
-        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+        self.newsletter_attributes.html = \
+            u"<html><body><p>Test</p></body></html>"
 
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(message_html, self.newsletter_attributes.html)
@@ -194,15 +203,15 @@ class TestSubscriberPreferencesInterpolation(TestNewsletterInterpolations):
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(
             message_html,
-            u'<html><body>'\
-            u'<p><a href="http://example.com/prefs" '\
-            u'class="subscriber-preferences">Preferences</a></p>'\
+            u'<html><body>'
+            u'<p><a href="http://example.com/prefs" '
+            u'class="subscriber-preferences">Preferences</a></p>'
             u'</body></html>'
         )
 
     def test_interpolation_honors_configuration(self):
         self.configuration.subscriber_preferences_url_xpath = \
-                "//em[contains(concat(' ', @class, ' '), ' customer-prefs ')]"
+            "//em[contains(concat(' ', @class, ' '), ' customer-prefs ')]"
 
         self.newsletter_attributes.html = u'<html><body>'\
             u'<p>Follow <em class="customer-prefs">prefs url</em></p>'\
@@ -211,9 +220,9 @@ class TestSubscriberPreferencesInterpolation(TestNewsletterInterpolations):
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(
             message_html,
-            u'<html><body>'\
-            u'<p>Follow <em '\
-            u'class="customer-prefs">http://example.com/prefs</em></p>'\
+            u'<html><body>'
+            u'<p>Follow <em '
+            u'class="customer-prefs">http://example.com/prefs</em></p>'
             u'</body></html>'
         )
 
@@ -223,38 +232,41 @@ class TestSubscriberRemovalInterpolation(TestNewsletterInterpolations):
     def setUp(self):
         super(TestSubscriberRemovalInterpolation, self).setUp()
         self.configuration.subscriber_removal_url_xpath = \
-                "//a[contains(concat(' ', @class, ' '), ' subscriber-removal ')]/@href"
+            "//a[contains(concat(' ', @class, ' '), ' subscriber-removal ')]/@href"
         self.subscriber.removal_url = u'http://example.com/removal'
 
     def test_interpolation_without_placeholder_if_should_not_add(self):
         self.configuration.add_subscriber_removal = False
-        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+        self.newsletter_attributes.html = \
+            u"<html><body><p>Test</p></body></html>"
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(message_html, self.newsletter_attributes.html)
 
     def test_interpolation_without_placeholder_if_should_add(self):
         self.configuration.add_subscriber_removal = True
         self.configuration.subscriber_removal_html = \
-                u'<p><a href="" class="subscriber-removal">Unsubscribe</a></p>'
+            u'<p><a href="" class="subscriber-removal">Unsubscribe</a></p>'
 
-        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+        self.newsletter_attributes.html = \
+            u"<html><body><p>Test</p></body></html>"
 
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(
             message_html,
-            u'<html><body>'\
-            u'<p>Test</p>'\
-            u'<p><a href="http://example.com/removal" '\
-            u'class="subscriber-removal">Unsubscribe</a></p>'\
+            u'<html><body>'
+            u'<p>Test</p>'
+            u'<p><a href="http://example.com/removal" '
+            u'class="subscriber-removal">Unsubscribe</a></p>'
             u'</body></html>'
         )
 
     def test_interpolation_without_placeholder_if_should_add_with_wrong_html(self):
         self.configuration.add_subscriber_removal = True
         self.configuration.subscriber_removal_html = \
-                u'<p><a href="" class="other-class">Unsubscribe</a></p>'
+            u'<p><a href="" class="other-class">Unsubscribe</a></p>'
 
-        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+        self.newsletter_attributes.html = \
+            u"<html><body><p>Test</p></body></html>"
 
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(message_html, self.newsletter_attributes.html)
@@ -263,7 +275,8 @@ class TestSubscriberRemovalInterpolation(TestNewsletterInterpolations):
         self.configuration.add_subscriber_removal = True
         self.configuration.subscriber_removal_html = u'<p></p><p></p>'
 
-        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+        self.newsletter_attributes.html = \
+            u"<html><body><p>Test</p></body></html>"
 
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(message_html, self.newsletter_attributes.html)
@@ -272,7 +285,8 @@ class TestSubscriberRemovalInterpolation(TestNewsletterInterpolations):
         self.configuration.add_subscriber_removal = True
         self.configuration.subscriber_removal_html = u'<p></p><p></p>'
 
-        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+        self.newsletter_attributes.html = \
+            u"<html><body><p>Test</p></body></html>"
 
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(message_html, self.newsletter_attributes.html)
@@ -281,7 +295,8 @@ class TestSubscriberRemovalInterpolation(TestNewsletterInterpolations):
         self.configuration.add_subscriber_removal = True
         self.configuration.subscriber_removal_html = u'<p></p><p></p>'
 
-        self.newsletter_attributes.html = u"<html><body><p>Test</p></body></html>"
+        self.newsletter_attributes.html = \
+            u"<html><body><p>Test</p></body></html>"
 
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(message_html, self.newsletter_attributes.html)
@@ -294,15 +309,15 @@ class TestSubscriberRemovalInterpolation(TestNewsletterInterpolations):
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(
             message_html,
-            u'<html><body>'\
-            u'<p><a href="http://example.com/removal" '\
-            u'class="subscriber-removal">Unsubscribe</a></p>'\
+            u'<html><body>'
+            u'<p><a href="http://example.com/removal" '
+            u'class="subscriber-removal">Unsubscribe</a></p>'
             u'</body></html>'
         )
 
     def test_interpolation_honors_configuration(self):
         self.configuration.subscriber_removal_url_xpath = \
-                "//em[contains(concat(' ', @class, ' '), ' customer-remove ')]"
+            "//em[contains(concat(' ', @class, ' '), ' customer-remove ')]"
 
         self.newsletter_attributes.html = u'<html><body>'\
             u'<p>Follow <em class="customer-remove">remove url</em></p>'\
@@ -311,9 +326,9 @@ class TestSubscriberRemovalInterpolation(TestNewsletterInterpolations):
         message_html = self.newsletter.compile(self.subscriber)
         self.assertEquals(
             message_html,
-            u'<html><body>'\
-            u'<p>Follow <em '\
-            u'class="customer-remove">http://example.com/removal</em></p>'\
+            u'<html><body>'
+            u'<p>Follow <em '
+            u'class="customer-remove">http://example.com/removal</em></p>'
             u'</body></html>'
         )
 
@@ -321,6 +336,7 @@ class TestSubscriberRemovalInterpolation(TestNewsletterInterpolations):
 class StringContaining(object):
     def __init__(self, required):
         self.required = required
+
     def __eq__(self, actual):
         if isinstance(actual, type(self)):
             return self.required == actual.required
@@ -335,8 +351,8 @@ class TestMessageCompilation(TestNewsletterInterpolations):
         self.newsletter_attributes.html = u'The original HTML'
 
         stubydoo.stub(self.message_factory.__call__).\
-                with_args(StringContaining(u'The original HTML')).\
-                and_return(message)
+            with_args(StringContaining(u'The original HTML')).\
+            and_return(message)
 
         self.assertEquals(self.newsletter.compile(self.subscriber),
                           'The resulting message')
@@ -376,7 +392,8 @@ class TestSetLastSent(unittest.TestCase):
 
         newsletter.setLastSent(self.context, stubydoo.double())
         self.assertTrue(self.object is self.context)
-        self.assertEquals(self.event.descriptions[0].attributes, ('last_sent',))
+        self.assertEquals(self.event.descriptions[0].attributes,
+                          ('last_sent',))
         self.assertTrue(self.event.descriptions[0].interface is
                         interfaces.INewsletterAttributes)
 

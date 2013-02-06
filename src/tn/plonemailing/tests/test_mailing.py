@@ -23,14 +23,15 @@ class TestMailingBase(unittest.TestCase):
 
         self.mailhost = stubydoo.double()
 
-        class IPossibleSubscriberProvider(zope.interface.Interface): pass
+        class IPossibleSubscriberProvider(zope.interface.Interface):
+            pass
         self.subscriber = stubydoo.double()
         self.subscribers = [self.subscriber]
         self.newsletter = stubydoo.double()
         self.message = stubydoo.double()
 
         stubydoo.stub(self.newsletter, 'compile').with_args(self.subscriber).\
-                and_return(self.message)
+            and_return(self.message)
         stubydoo.stub(self.mailhost, 'send').with_args(self.message)
 
         @zope.component.adapter(None)
@@ -130,7 +131,7 @@ class TestMailingIterSubscribers(TestMailingBase):
     def test_iter_subscribers(self):
         self.configure_newsletter_from_content_behavior()
 
-        result = list(self.mailing.iterSubscribers(self.context))
+        result = list(self.mailing.iter_subscribers(self.context))
         self.assertEquals(result, self.subscribers)
 
 
@@ -152,8 +153,8 @@ class TestMailHost(unittest.TestCase):
 
     def make_portal(self):
         portal_class = type('dict', (dict,), dict(
-            objectIds=lambda self:self.keys(),
-            getSiteManager=lambda self:stubydoo.double()
+            objectIds=lambda self: self.keys(),
+            getSiteManager=lambda self: stubydoo.double()
         ))
         return portal_class()
 
@@ -168,10 +169,12 @@ class TestMailHost(unittest.TestCase):
         return mailhost
 
     def test_no_special_mailhost_marked(self):
-        self.assertTrue(self.mailing.getMailHost() is self.portal['MailHost'])
+        self.assertTrue(self.mailing.get_mail_host() is
+                        self.portal['MailHost'])
 
     def test_special_mailhost_marked(self):
         other_mailhost = self.make_mailhost('OtherMailHost')
         zope.interface.alsoProvides(other_mailhost, interfaces.IMailHost)
 
-        self.assertTrue(self.mailing.getMailHost() is other_mailhost)
+        self.assertTrue(self.mailing.get_mail_host() is
+                        other_mailhost)

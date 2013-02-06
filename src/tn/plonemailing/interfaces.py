@@ -61,6 +61,10 @@ class INewsletterHTML(zope.interface.Interface):
 
 class INewsletterAttributes(zope.interface.Interface):
     """Attributes that every newsletter should have.
+
+    All newsletters must have an HTML representation, which is provided
+    by the `html` attribute.  Conversion is done always assuming HTML
+    as being the input format.
     """
 
     author_address = zope.schema.TextLine()
@@ -98,17 +102,17 @@ class INewsletter(INewsletterAttributes):
         """
 
 
-class IConverter(zope.interface.Interface):
+class IContentConversion(zope.interface.Interface):
+    """An object responsible to convert an HTML chunk to another format.
+    """
 
     content_type = zope.schema.ASCIILine(
         title=u'Content type',
         description=u'The content type this converter emits.'
     )
 
-    newsletter = zope.interface.Attribute('The newsletter object')
-
-    def convert():
-        """Convert the newsletter content to another format.
+    def apply(html):
+        """Perform conversion of the given HTML to another format.
 
         Return a unicode string.
         """
@@ -258,7 +262,7 @@ class IMailing(zope.interface.Interface):
         `context` must be adaptable to `behaviors.INewsletterFromContent`.
         """
 
-    def getMailHost():
+    def get_mail_host():
         """Return the site's mailhost.
 
         A marked mailhost instance (with `interfaces.IMailHost`) from

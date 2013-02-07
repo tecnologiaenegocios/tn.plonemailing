@@ -40,7 +40,7 @@ class TextContentConversion(object):
 
     content_type = 'text/plain'
 
-    def convert(self, html):
+    def apply(self, html):
         html = lxml.html.document_fromstring(html)
         body = lxml.html.tostring(html.cssselect('body')[0], encoding=unicode)
         return self._to_text(body)

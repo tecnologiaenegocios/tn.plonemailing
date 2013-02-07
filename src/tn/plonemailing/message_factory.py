@@ -31,11 +31,11 @@ class TextMessageFactory(grok.MultiAdapter, BaseMessageFactory):
     grok.implements(interfaces.IMessageFactory)
     grok.name(u'text')
 
-    def _configure_message(self, message, content):
+    def _configure_message(self, msg, content):
         configure_text_message(self.context,
                                self.request,
                                self.newsletter,
-                               message,
+                               msg,
                                content)
 
 
@@ -44,12 +44,12 @@ class MultipartMessageFactory(grok.MultiAdapter, BaseMessageFactory):
     grok.implements(interfaces.IMessageFactory)
     grok.name(u'__multipart__')
 
-    def _configure_message(self, message, content):
+    def _configure_message(self, msg, content):
         configure_multipart_message(self.context,
                                     self.request,
                                     self.newsletter,
                                     self.subscriber,
-                                    message,
+                                    msg,
                                     content)
 
 

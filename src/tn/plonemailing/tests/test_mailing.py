@@ -48,31 +48,13 @@ class TestMailingBase(unittest.TestCase):
         placelesssetup.tearDown()
 
     def configure_newsletter_from_content_behavior(self):
-
-        possible_subscriber_provider = stubydoo.double()
-        possible_subscriber_provider_rel = stubydoo.double(
-            to_object=possible_subscriber_provider
-        )
-
-        subscriber_provider = stubydoo.double(subscribers=self.subscribers)
-        self.behavior = stubydoo.double(
-            possible_subscriber_providers=[possible_subscriber_provider_rel]
-        )
+        self.behavior = stubydoo.double(subscribers=self.subscribers)
 
         @zope.component.adapter(None)
         @zope.interface.implementer(behaviors.INewsletterFromContent)
         def behavior_adapter(context):
             return self.behavior
         zope.component.provideAdapter(behavior_adapter)
-
-        @zope.component.adapter(interfaces.IPossibleSubscriberProvider)
-        @zope.interface.implementer(interfaces.ISubscriberProvider)
-        def subscriber_provider_adapter(subscribers):
-            return subscriber_provider
-        zope.component.provideAdapter(subscriber_provider_adapter)
-
-        zope.interface.alsoProvides(possible_subscriber_provider,
-                                    interfaces.IPossibleSubscriberProvider)
 
         # This is normally registered during application startup.
         zope.component.provideHandler(zope.component.event.objectEventNotify)
@@ -110,7 +92,7 @@ class TestMailingSend(TestMailingBase):
         self.assertTrue(self.event.message    is self.message)
 
     def test_send_should_be_able_to_not_fire_event(self):
-        testpoint = stubydoo.double(event_called=lambda x:None)
+        testpoint = stubydoo.double(event_called=lambda x: None)
 
         @zope.component.adapter(None, interfaces.INewsletterSentEvent)
         def handler(object, event):
@@ -123,16 +105,6 @@ class TestMailingSend(TestMailingBase):
                           suppress_events=True,
                           mailhost=self.mailhost,
                           subscribers=self.subscribers)
-
-
-@stubydoo.assert_expectations
-class TestMailingIterSubscribers(TestMailingBase):
-
-    def test_iter_subscribers(self):
-        self.configure_newsletter_from_content_behavior()
-
-        result = list(self.mailing.iter_subscribers(self.context))
-        self.assertEquals(result, self.subscribers)
 
 
 @stubydoo.assert_expectations

@@ -42,12 +42,7 @@ class Mailing(grok.GlobalUtility):
                 notify(NewsletterSentEvent(newsletter, subscriber, message))
 
     def iter_subscribers(self, context):
-        behavior = INewsletterFromContent(context)
-        for possible_provider in behavior.possible_subscriber_providers:
-            obj = possible_provider.to_object
-            provider = interfaces.ISubscriberProvider(obj)
-            for subscriber in provider.subscribers:
-                yield subscriber
+        return INewsletterFromContent(context).subscribers
 
     def get_mail_host(self):
         site = getSite()

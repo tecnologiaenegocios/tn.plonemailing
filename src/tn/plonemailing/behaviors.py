@@ -20,6 +20,7 @@ import zope.interface
 
 NEWSLETTER_PROPERTIES_KEY = 'tn.plonemailing.newsletter-properties'
 
+
 @grok.provider(zope.schema.interfaces.IContextSourceBinder)
 def possiblePossibleSubscriberProviders(context):
     terms        = []
@@ -31,16 +32,19 @@ def possiblePossibleSubscriberProviders(context):
         obj = item.getObject()
         obj_id = intids.getId(obj)
         title = item.Title if isinstance(item.Title, unicode) \
-                else item.Title.decode('utf-8')
+            else item.Title.decode('utf-8')
         terms.append(term_factory(obj, obj_id, title))
     return zope.schema.vocabulary.SimpleVocabulary(terms)
+
 
 def SequenceSelectFieldWidget(field, request):
     return SequenceChoiceSelectFieldWidget(field, field.value_type, request)
 
 
 base_newsletter = interfaces.INewsletterAttributes
-class INewsletterFromContent(form.Schema):
+
+
+class INewsletterFromContent(form.Schema, interfaces.ISubscriberProvider):
     """Transform a content into a newsletter.
     """
 
@@ -48,8 +52,8 @@ class INewsletterFromContent(form.Schema):
         'newsletter',
         label=_(u'Newsletter'),
         fields=('possible_subscriber_providers',
-                'author_address',   'author_name',
-                'sender_address',   'sender_name',
+                'author_address', 'author_name',
+                'sender_address', 'sender_name',
                 'reply_to_address', 'reply_to_name',
                 'subject'),
     )
@@ -69,7 +73,8 @@ class INewsletterFromContent(form.Schema):
         title=_(u'Author e-mail address'),
         description=_(u'The e-mail address of the author of the newsletter.  '
                       u'If none is provided, the address '
-                      u'set as the site\'s contact form address will be used.'),
+                      u'set as the site\'s contact form address will be '
+                      u'used.'),
         required=False,
     )
 
@@ -125,6 +130,7 @@ zope.interface.alsoProvides(INewsletterFromContent, form.IFormFieldProvider)
 
 apply = lambda fn: fn()
 
+
 def add_annotations_properties(*names):
     def generate_property(name):
         def get(self):
@@ -145,8 +151,8 @@ class NewsletterFromContent(object):
     def __init__(self, context):
         self.context = context
 
-    add_annotations_properties('author_address',   'author_name',
-                               'sender_address',   'sender_name',
+    add_annotations_properties('author_address', 'author_name',
+                               'sender_address', 'sender_name',
                                'reply_to_address', 'reply_to_name',
                                'subject')
 
@@ -155,12 +161,22 @@ class NewsletterFromContent(object):
     @apply
     def possible_subscriber_providers():
         def get(self):
-            return getattr(self.context,
-                           '_newsletter_from_content_possible_subscriber_providers',
-                           [])
+            return getattr(
+                self.context,
+                '_newsletter_from_content_possible_subscriber_providers',
+                []
+            )
         def set(self, value):
             self.context._newsletter_from_content_possible_subscriber_providers = value
         return property(get, set)
+
+    @property
+    def subscribers(self):
+        for possible_provider in self.possible_subscriber_providers:
+            obj = possible_provider.to_object
+            provider = interfaces.ISubscriberProvider(obj)
+            for subscriber in provider.subscribers:
+                yield subscriber
 
     @property
     @memoize
@@ -241,7 +257,6 @@ class NewsletterAttributes(grok.Adapter):
         if values is None:
             values = annotations[NEWSLETTER_PROPERTIES_KEY] = PersistentDict()
         return values
-
 
 class INewsletterFromContentMarker(IHasRelations,
                                    interfaces.IPossibleNewsletterAttributes):

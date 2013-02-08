@@ -110,6 +110,30 @@ class TestNewsletterFromContent(unittest.TestCase):
             behaviors.INewsletterFromContent.providedBy(self.adapted)
         )
 
+    def test_subscribers(self):
+        double = stubydoo.double
+        stub   = stubydoo.stub
+
+        sub1, sub2, sub3, sub4 = double(), double(), double(), double()
+        obj1 = double()
+        obj2 = double()
+
+        obj1_sub_provider = double(subscribers=[sub1, sub2])
+        obj2_sub_provider = double(subscribers=[sub3, sub4])
+
+        stub(obj1, '__conform__').with_args(interfaces.ISubscriberProvider).\
+            and_return(obj1_sub_provider)
+        stub(obj2, '__conform__').with_args(interfaces.ISubscriberProvider).\
+            and_return(obj2_sub_provider)
+
+        obj1_rel = double(to_object=obj1)
+        obj2_rel = double(to_object=obj2)
+
+        self.adapted.possible_subscriber_providers = [obj1_rel, obj2_rel]
+
+        self.assertEquals(set(self.adapted.subscribers),
+                          set((sub1, sub2, sub3, sub4)))
+
     # The confusing code below will generate a test to prove that initially
     # these attributes are empty, and that they are stored in an annotation.
 

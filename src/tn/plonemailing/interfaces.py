@@ -42,7 +42,7 @@ class ISubscriberProvider(zope.interface.Interface):
         'Subscribers',
         """An interable or iterator of the provided subscribers.
 
-        Each value returned or yielded must be an ISubscriber.
+        Each value contained or yielded must be an ISubscriber.
         """
     )
 
@@ -266,12 +266,6 @@ class IMailing(zope.interface.Interface):
 
         If `suppress_events` is `False`, a `INewsletterSentEvent` event
         will be fired for each subscriber.
-        """
-
-    def iterSubscribers(context):
-        """Yield each subscriber of each subscriber provider from context.
-
-        `context` must be adaptable to `behaviors.INewsletterFromContent`.
         """
 
     def get_mail_host():

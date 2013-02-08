@@ -1,6 +1,7 @@
 from datetime import datetime
 from five import grok
 from plone.indexer import indexer
+from plone.memoize.instance import memoize
 from tn.plonemailing import interfaces
 from tn.plonemailing import global_configuration
 from zope.component import getMultiAdapter
@@ -54,17 +55,6 @@ class Newsletter(grok.MultiAdapter):
 
     def compile(self, subscriber):
         html = self._interpolate(subscriber)
-
-        # The inline_styles thing: this could be implemented in the conversion
-        # code for HTML format, but then custom converters would be obligated
-        # to reimplement this check or give it up entirely.  Doing this stuff
-        # here ensures that the inline_styles setting is honored for all HTML
-        # conversions even when they're customized, and also for message
-        # factory customizations.
-        if self.configuration.inline_styles:
-            p = premailer.Premailer(html, remove_classes=False)
-            html = unicode(p.transform(pretty_print=False))
-
         factory = getMultiAdapter(
             (self.context, self.request, self, subscriber),
             interfaces.IMessageFactory,
@@ -72,8 +62,22 @@ class Newsletter(grok.MultiAdapter):
         )
         return factory(html)
 
+    @property
+    @memoize
+    def _html(self):
+        # The `inline_styles` thing: this could be implemented in the
+        # conversion code for HTML format, but then custom converters would be
+        # obligated to reimplement this check or give it up entirely.  Doing
+        # this stuff here ensures that the inline_styles setting is honored for
+        # all HTML conversions even when they're customized, and also for
+        # message factory customizations.
+        if self.configuration.inline_styles:
+            p = premailer.Premailer(self.html, remove_classes=False)
+            return unicode(p.transform(pretty_print=False))
+        return self.html
+
     def _interpolate(self, subscriber):
-        html_tree = lxml.html.document_fromstring(self.html)
+        html_tree = lxml.html.document_fromstring(self._html)
 
         self._add_subscriber_name(html_tree, subscriber)
         self._add_preferences_url(html_tree, subscriber)

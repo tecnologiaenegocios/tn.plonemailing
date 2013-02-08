@@ -6,7 +6,7 @@ from zope.event import notify
 
 try:
     from zope.component.hooks import getSite
-    getSite # pyflakes
+    getSite  # pyflakes / flake8
 except ImportError:
     from zope.site.hooks import getSite
 

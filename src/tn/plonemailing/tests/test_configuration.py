@@ -1,5 +1,5 @@
 from plone.registry.interfaces import IRegistry
-from tn.plonemailing.global_configuration import Configuration
+from tn.plonemailing import global_configuration
 from tn.plonemailing.interfaces import IConfiguration
 from tn.plonemailing.interfaces import validate_html
 from zope.app.testing import placelesssetup
@@ -18,7 +18,7 @@ class TestConfiguration(unittest.TestCase):
         placelesssetup.setUp(self)
         self.registry = dict()
         zope.component.provideUtility(self.registry, provides=IRegistry)
-        self.configuration = Configuration()
+        self.configuration = global_configuration.Configuration()
 
     def tearDown(self):
         placelesssetup.tearDown()
@@ -35,12 +35,14 @@ class TestConfiguration(unittest.TestCase):
         self.assertFalse(self.configuration.add_subscriber_preferences)
 
     def test_subscriber_prefs_url_xpath_is_fetched_from_registry(self):
-        self.registry[config_prefix + 'subscriber_preferences_url_xpath'] = u'//foo'
+        self.registry[config_prefix + 'subscriber_preferences_url_xpath'] = \
+            u'//foo'
         self.assertEquals(self.configuration.subscriber_preferences_url_xpath,
                           u'//foo')
 
     def test_subscriber_prefs_html_is_fetched_from_registry(self):
-        self.registry[config_prefix + 'subscriber_preferences_html'] = u'<p>Foo</p>'
+        self.registry[config_prefix + 'subscriber_preferences_html'] = \
+            u'<p>Foo</p>'
         self.assertEquals(self.configuration.subscriber_preferences_html,
                           u'<p>Foo</p>')
 
@@ -55,18 +57,26 @@ class TestConfiguration(unittest.TestCase):
         self.assertFalse(self.configuration.add_subscriber_removal)
 
     def test_subscriber_removal_url_xpath_is_fetched_from_registry(self):
-        self.registry[config_prefix + 'subscriber_removal_url_xpath'] = u'//foo'
+        self.registry[config_prefix + 'subscriber_removal_url_xpath'] = \
+            u'//foo'
         self.assertEquals(self.configuration.subscriber_removal_url_xpath,
                           u'//foo')
 
     def test_subscriber_removal_html_is_fetched_from_registry(self):
-        self.registry[config_prefix + 'subscriber_removal_html'] = u'<p>Foo</p>'
+        self.registry[config_prefix + 'subscriber_removal_html'] = \
+            u'<p>Foo</p>'
         self.assertEquals(self.configuration.subscriber_removal_html,
                           u'<p>Foo</p>')
 
     def test_subscriber_removal_html_is_blank_if_none_in_registry(self):
         self.registry[config_prefix + 'subscriber_removal_html'] = None
         self.assertEquals(self.configuration.subscriber_removal_html, u'')
+
+    def test_inline_styles_is_fetched_from_registry(self):
+        self.registry[config_prefix + 'inline_styles'] = True
+        self.assertTrue(self.configuration.inline_styles)
+        self.registry[config_prefix + 'inline_styles'] = False
+        self.assertFalse(self.configuration.inline_styles)
 
 
 class TestConfigurationHTMLValidation(unittest.TestCase):
@@ -87,3 +97,15 @@ class TestConfigurationHTMLValidation(unittest.TestCase):
             validate_html,
             u'<p></p><p></p>'
         )
+
+
+class TestGet(unittest.TestCase):
+
+    def test_get(self):
+        placelesssetup.setUp(self)
+        configuration = object()
+        zope.component.provideUtility(configuration, provides=IConfiguration)
+
+        self.assertTrue(global_configuration.get() is configuration)
+
+        placelesssetup.tearDown()

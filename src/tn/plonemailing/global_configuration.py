@@ -42,6 +42,10 @@ class Configuration(grok.GlobalUtility):
     def subscriber_removal_html(self):
         return self.from_registry('subscriber_removal_html') or u''
 
+    @property
+    def inline_styles(self):
+        return self.from_registry('inline_styles')
+
     def from_registry(self, key):
         return getUtility(IRegistry)[config_prefix + key]
 
@@ -57,3 +61,7 @@ class ControlPanelView(ControlPanelFormWrapper, grok.View):
 
     label = _(u'TN Plone Mailing settings')
     form = ControlPanelForm
+
+
+def get():
+    return getUtility(interfaces.IConfiguration)

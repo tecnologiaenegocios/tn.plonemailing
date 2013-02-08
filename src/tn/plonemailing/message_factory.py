@@ -4,9 +4,9 @@ from five import grok
 from tn.plonemailing import interfaces
 from zope.component import getMultiAdapter
 
-import quopri
 import email.header
 import os
+import quopri
 import random
 import re
 import time
@@ -83,13 +83,13 @@ def build_message_root(newsletter, subscriber):
     msg['Mime-Version'] = '1.0'
 
     if (newsletter.reply_to_address and
-        newsletter.reply_to_address != newsletter.author_address):
+            newsletter.reply_to_address != newsletter.author_address):
         add_address_header(msg, 'Reply-To',
                            newsletter.reply_to_name,
                            newsletter.reply_to_address)
 
     if (newsletter.sender_address and
-        newsletter.sender_address != newsletter.author_address):
+            newsletter.sender_address != newsletter.author_address):
         add_address_header(msg, 'Sender',
                            newsletter.sender_name,
                            newsletter.sender_address)

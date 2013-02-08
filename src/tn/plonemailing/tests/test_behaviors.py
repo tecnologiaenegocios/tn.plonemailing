@@ -19,6 +19,7 @@ import zope.component
 
 class IntIds(object):
     zope.interface.implements(zope.intid.interfaces.IIntIds)
+
     def getId(self, obj):
         return hash(obj)
 
@@ -33,7 +34,7 @@ class TestPossibleSubscriberProviders(unittest.TestCase):
         placelesssetup.setUp(self)
         zope.component.provideUtility(intids)
 
-        self.catalog = stubydoo.double(__call__=lambda x:None)
+        self.catalog = stubydoo.double(__call__=lambda x: None)
         self.context = stubydoo.double(portal_catalog=self.catalog)
 
         self.possible_list = stubydoo.double()
@@ -92,6 +93,7 @@ class TestNewsletterFromContent(unittest.TestCase):
         # The persistency of NewsletterFromContent attributes is done in an
         # annotation.
         self.annotations = {}
+
         @zope.component.adapter(None)
         @zope.interface.implementer(zope.annotation.interfaces.IAnnotations)
         def context_annotations(obj):
@@ -108,21 +110,22 @@ class TestNewsletterFromContent(unittest.TestCase):
             behaviors.INewsletterFromContent.providedBy(self.adapted)
         )
 
-
     # The confusing code below will generate a test to prove that initially
     # these attributes are empty, and that they are stored in an annotation.
 
     def make_test(attr):
         def test_value_empty(self):
             self.assertTrue(getattr(self.adapted, attr) is None)
+
         def test_value_persistency(self):
             setattr(self.adapted, attr, 'the value')
             new_adapted = behaviors.NewsletterFromContent(self.context)
             self.assertEquals(getattr(new_adapted, attr), 'the value')
+
         return (test_value_empty, test_value_persistency)
 
-    for attr in ('author_address',   'author_name',
-                 'sender_address',   'sender_name',
+    for attr in ('author_address', 'author_name',
+                 'sender_address', 'sender_name',
                  'reply_to_address', 'reply_to_name',
                  'subject'):
         a, b = make_test(attr)
@@ -130,7 +133,6 @@ class TestNewsletterFromContent(unittest.TestCase):
         locals()['test_%s_is_persisted' % attr] = b
         del a, b
     del make_test
-
 
     def test_possible_subscriber_providers_is_empty(self):
         self.assertEquals(self.adapted.possible_subscriber_providers, [])
@@ -162,7 +164,9 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
         )
 
         self.context = stubydoo.double()
-        self.context.portal_url = stubydoo.double(getPortalObject=lambda x:portal)
+        self.context.portal_url = stubydoo.double(
+            getPortalObject=lambda x: portal
+        )
 
         zope.interface.alsoProvides(portal,
                                     plone.app.controlpanel.mail.IMailSchema)
@@ -233,7 +237,6 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
         self.behavior.author_name = "the author's name"
         self.assertEquals(self.adapted.author_name, "the author's name")
 
-
     # Sender address
 
     def test_sender_address_from_site_if_is_none_in_behavior(self):
@@ -263,7 +266,6 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
         self.assertEquals(self.adapted.sender_address,
                           "the sender's email address")
 
-
     # Sender name
 
     def test_sender_name_from_site_if_is_none_in_behavior(self):
@@ -285,7 +287,6 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
         self.behavior.sender_name = "the sender's name"
         self.assertEquals(self.adapted.sender_name, "the sender's name")
 
-
     # Reply-To address
 
     def test_reply_to_address_is_none_if_not_set_in_behavior(self):
@@ -298,7 +299,6 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
         self.assertEquals(self.adapted.reply_to_address,
                           "the reply email address")
 
-
     # Reply-To name
 
     def test_reply_to_name_is_none_if_not_set_in_behavior(self):
@@ -309,7 +309,6 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
         self.behavior.reply_to_name = "the reply name"
 
         self.assertEquals(self.adapted.reply_to_name, "the reply name")
-
 
     # Subject
 
@@ -328,7 +327,6 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
         self.behavior.subject = u'A custom subject'
         self.assertEquals(self.adapted.subject, u'A custom subject')
 
-
     # HTML
 
     def test_html_is_obtained_from_adapter(self):
@@ -339,7 +337,6 @@ class TestNewsletterAttributesAdapter(unittest.TestCase):
         zope.component.provideAdapter(newsletter_html)
 
         self.assertEquals(self.adapted.html, u'The HTML code')
-
 
     # Last sent
 

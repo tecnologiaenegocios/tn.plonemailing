@@ -218,8 +218,10 @@ class NewsletterAttributes(grok.Adapter):
     def last_sent():
         def get(self):
             return self.annotations.get('last_sent')
+
         def set(self, value):
             self.annotations['last_sent'] = value
+
         return property(get, set)
 
     @memoize
@@ -251,9 +253,10 @@ class INewsletterFromContentMarker(IHasRelations,
     # although it being just a marker provided by the object on which the
     # behavior INewsletterFromContent is assigned, which in turn populates and
     # manages this field.
-    _newsletter_from_content_possible_subscriber_providers = z3c.relationfield.RelationList(
-        required=False,
-        value_type=z3c.relationfield.RelationChoice(
-            source=possiblePossibleSubscriberProviders
+    _newsletter_from_content_possible_subscriber_providers = \
+        z3c.relationfield.RelationList(
+            required=False,
+            value_type=z3c.relationfield.RelationChoice(
+                source=possiblePossibleSubscriberProviders
+            )
         )
-    )

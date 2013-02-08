@@ -2,14 +2,15 @@ from datetime import datetime
 from five import grok
 from plone.indexer import indexer
 from tn.plonemailing import interfaces
+from tn.plonemailing import global_configuration
 from zope.component import getMultiAdapter
-from zope.component import getUtility
 from zope.event import notify
 from zope.lifecycleevent import Attributes, ObjectModifiedEvent
 
 import inspect
 import lxml.etree
 import lxml.html
+import premailer
 import zope.globalrequest
 
 
@@ -24,10 +25,12 @@ def newsletter_dispatcher(context):
 
 def add_attributes_from_newsletter_attributes(*property_names):
     f_locals = inspect.currentframe(1).f_locals
+
     def make_fn(property_name):
         return property(lambda self: getattr(
             self.newsletter_attributes, property_name
         ))
+
     for property_name in property_names:
         f_locals[property_name] = make_fn(property_name)
 
@@ -37,8 +40,8 @@ class Newsletter(grok.MultiAdapter):
     grok.implements(interfaces.INewsletter)
 
     add_attributes_from_newsletter_attributes(
-        'author_address',   'author_name',
-        'sender_address',   'sender_name',
+        'author_address', 'author_name',
+        'sender_address', 'sender_name',
         'reply_to_address', 'reply_to_name',
         'subject', 'html'
     )
@@ -47,10 +50,21 @@ class Newsletter(grok.MultiAdapter):
         self.context = context
         self.request = request
         self.newsletter_attributes = newsletter_attributes
-        self.configuration = getUtility(interfaces.IConfiguration)
+        self.configuration = global_configuration.get()
 
     def compile(self, subscriber):
         html = self._interpolate(subscriber)
+
+        # The inline_styles thing: this could be implemented in the conversion
+        # code for HTML format, but then custom converters would be obligated
+        # to reimplement this check or give it up entirely.  Doing this stuff
+        # here ensures that the inline_styles setting is honored for all HTML
+        # conversions even when they're customized, and also for message
+        # factory customizations.
+        if self.configuration.inline_styles:
+            p = premailer.Premailer(html, remove_classes=False)
+            html = unicode(p.transform(pretty_print=False))
+
         factory = getMultiAdapter(
             (self.context, self.request, self, subscriber),
             interfaces.IMessageFactory,
@@ -65,7 +79,7 @@ class Newsletter(grok.MultiAdapter):
         self._add_preferences_url(html_tree, subscriber)
         self._add_removal_url(html_tree, subscriber)
 
-        return lxml.html.tostring(html_tree, encoding=unicode)
+        return lxml.html.tostring(html_tree, method="html", encoding=unicode)
 
     def _add_subscriber_name(self, html_tree, subscriber):
         xpath = self.configuration.subscriber_name_xpath
@@ -133,9 +147,11 @@ def setLastSent(object, event):
     modification = Attributes(interfaces.INewsletterAttributes, 'last_sent')
     notify(ObjectModifiedEvent(object, modification))
 
+
 @indexer(interfaces.IPossibleNewsletterAttributes)
 def getSortableLastSent(object):
     return interfaces.INewsletterAttributes(object).last_sent or datetime.max
+
 
 @indexer(interfaces.IPossibleNewsletterAttributes)
 def getLastSent(object):

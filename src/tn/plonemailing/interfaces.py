@@ -199,6 +199,18 @@ class IConfiguration(zope.interface.Interface):
         required=False
     )
 
+    inline_styles = zope.schema.Bool(
+        title=_(u'Inline styles'),
+        description=_(u'Mark to make styles be added to each tag individually '
+                      u'(for HTML email only).  Some webmail services like '
+                      u'GMail will strip "<style>" tags before showing the '
+                      u'message to the user.  With this option enabled, the '
+                      u'styles are not removed because they will be added in '
+                      u'an "style" attribute together with each tag they '
+                      u'refer to.'),
+        default=False,
+    )
+
     @zope.interface.invariant
     def check_preferences_html(obj):
         # Sometimes attributes which are not required are not even set in the

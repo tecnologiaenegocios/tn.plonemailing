@@ -27,6 +27,7 @@ setup(
         'plone.behavior',
         'plone.directives.form',
         'plone.namedfile[blobs]',
+        'premailer',
         'lxml',
     ],
     extras_require={

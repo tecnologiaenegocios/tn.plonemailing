@@ -4,6 +4,7 @@ from tn.plonemailing import interfaces
 from zope.app.testing import placelesssetup
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
+import premailer
 import stubydoo
 import unittest
 import zope.component
@@ -31,6 +32,7 @@ class TestNewsletter(unittest.TestCase):
             add_subscriber_removal=True,
             subscriber_removal_url_xpath=u'',
             subscriber_removal_html=u'',
+            inline_styles=False,
         )
         zope.component.provideUtility(self.configuration)
 
@@ -47,6 +49,7 @@ class TestNewsletter(unittest.TestCase):
         @zope.interface.implementer(interfaces.IMessageFactory)
         def message_factory_factory(context, request, newsletter, subscriber):
             return self.message_factory
+
         zope.component.provideAdapter(message_factory_factory)
 
     def tearDown(self):
@@ -56,8 +59,8 @@ class TestNewsletter(unittest.TestCase):
 class TestNewsletterAttributes(TestNewsletter):
 
     def test_attributes_from_newsletter_attributes(self):
-        for attribute in ('author_address',   'author_name',
-                          'sender_address',   'sender_name',
+        for attribute in ('author_address', 'author_name',
+                          'sender_address', 'sender_name',
                           'reply_to_address', 'reply_to_name',
                           'subject', 'html'):
             value = object()
@@ -333,29 +336,51 @@ class TestSubscriberRemovalInterpolation(TestNewsletterInterpolations):
         )
 
 
-class StringContaining(object):
-    def __init__(self, required):
-        self.required = required
+class string_containing(object):
+    def __init__(self, expected):
+        self.expected = expected
 
     def __eq__(self, actual):
-        if isinstance(actual, type(self)):
-            return self.required == actual.required
-        return self.required in actual
+        if isinstance(actual, string_containing):
+            return self.expected == actual.expected
+        return self.expected in actual
 
 
 @stubydoo.assert_expectations
 class TestMessageCompilation(TestNewsletterInterpolations):
 
-    def test_compile(self):
+    def test_compile_returns_message_from_factory(self):
         message = 'The resulting message'
         self.newsletter_attributes.html = u'The original HTML'
 
         stubydoo.stub(self.message_factory.__call__).\
-            with_args(StringContaining(u'The original HTML')).\
+            with_args(string_containing(u'The original HTML')).\
             and_return(message)
 
         self.assertEquals(self.newsletter.compile(self.subscriber),
                           'The resulting message')
+
+    def test_inline_styles(self):
+        self.configuration.inline_styles = True
+        self.newsletter_attributes.html = \
+            u'<style>p{color:red}</style><p>Foo</p>'
+        stubydoo.expect(self.message_factory.__call__).\
+            to_be_called.with_args(string_containing(
+                u'<p style="color:red">Foo</p>'
+            ))
+
+        self.newsletter.compile(self.subscriber)
+
+    def test_no_inline_styles(self):
+        self.configuration.inline_styles = False
+        self.newsletter_attributes.html = \
+            u'<style>p{color:red}</style><p>Foo</p>'
+        stubydoo.expect(self.message_factory.__call__).\
+            to_be_called.with_args(string_containing(
+                u'<style>p{color:red}</style></head><body><p>Foo</p>'
+            ))
+
+        self.newsletter.compile(self.subscriber)
 
 
 @stubydoo.assert_expectations

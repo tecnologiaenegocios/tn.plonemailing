@@ -77,45 +77,56 @@ class Newsletter(grok.MultiAdapter):
         return self.html
 
     def _interpolate(self, subscriber):
-        html_tree = lxml.html.document_fromstring(self._html)
+        interpolation = NewsletterInterpolation(self.configuration, self._html,
+                                                subscriber)
+        return interpolation.build_html()
 
-        self._add_subscriber_name(html_tree, subscriber)
-        self._add_preferences_url(html_tree, subscriber)
-        self._add_removal_url(html_tree, subscriber)
 
-        return lxml.html.tostring(html_tree, method="html", encoding=unicode)
+class NewsletterInterpolation(object):
 
-    def _add_subscriber_name(self, html_tree, subscriber):
+    def __init__(self, configuration, html, subscriber):
+        self.configuration = configuration
+        self.html_tree = lxml.html.document_fromstring(html)
+        self.subscriber = subscriber
+
+    def build_html(self):
+        self._add_subscriber_name()
+        self._add_preferences_url()
+        self._add_removal_url()
+        return lxml.html.tostring(self.html_tree, method='html',
+                                  encoding=unicode)
+
+    def _add_subscriber_name(self):
         xpath = self.configuration.subscriber_name_xpath
-        self._replace_xpath(html_tree, xpath, subscriber.name)
+        self._replace_xpath(self.html_tree, xpath, self.subscriber.name)
 
-    def _add_preferences_url(self, html_tree, subscriber):
+    def _add_preferences_url(self):
         xpath = self.configuration.subscriber_preferences_url_xpath
-        content = subscriber.preferences_url
+        content = self.subscriber.preferences_url
         user_html = self.configuration.subscriber_preferences_html
         add = self.configuration.add_subscriber_preferences
 
-        self._add_with_user_html(html_tree, xpath, content, user_html, add)
+        self._add_with_user_html(xpath, content, user_html, add)
 
-    def _add_removal_url(self, html_tree, subscriber):
+    def _add_removal_url(self):
         xpath = self.configuration.subscriber_removal_url_xpath
-        content = subscriber.removal_url
+        content = self.subscriber.removal_url
         user_html = self.configuration.subscriber_removal_html
         add = self.configuration.add_subscriber_removal
 
-        self._add_with_user_html(html_tree, xpath, content, user_html, add)
+        self._add_with_user_html(xpath, content, user_html, add)
 
-    def _add_with_user_html(self, html_tree, xpath, content, user_html, add):
+    def _add_with_user_html(self, xpath, content, user_html, add):
         if not content:
             return
-        done = self._replace_xpath(html_tree, xpath, content)
+        done = self._replace_xpath(self.html_tree, xpath, content)
         if not done and add:
             try:
                 user_tree = lxml.html.fragment_fromstring(user_html)
             except lxml.etree.LxmlError:
                 return
             user_done = self._replace_xpath(user_tree, xpath, content)
-            body = html_tree.xpath('//body')
+            body = self.html_tree.xpath('//body')
             if user_done and body:
                 body = body[0]
                 body.append(user_tree)

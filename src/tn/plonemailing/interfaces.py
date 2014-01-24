@@ -205,10 +205,11 @@ class IConfiguration(zope.interface.Interface):
         title=_(u'Inline styles'),
         description=_(u'Mark to make styles be added to each tag individually '
                       u'(for HTML email only).  Some webmail services like '
-                      u'GMail will strip "<style>" tags before showing the '
+                      u'GMail will strip "style" blocks before showing the '
                       u'message to the user.  With this option enabled, the '
-                      u'styles are not removed because they will be added in '
-                      u'an "style" attribute together with each tag they '
+                      u'styles are less likely to be stripped by those '
+                      u'services because they will be added in inline '
+                      u'"style" attributes together with each tag they '
                       u'refer to.'),
         default=False,
     )

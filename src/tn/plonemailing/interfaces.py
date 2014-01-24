@@ -24,14 +24,13 @@ class ISubscriber(zope.interface.Interface):
     """A subscriber.
     """
 
-    email  = zope.schema.TextLine(title=u'E-mail')
+    email = zope.schema.TextLine(title=u'E-mail')
     format = zope.schema.TextLine(title=u'Format')
-    name   = zope.schema.TextLine(title=u'Name', required=False)
+    name = zope.schema.TextLine(title=u'Name', required=False)
 
     preferences_url = zope.schema.TextLine(title=u'Preferences URL',
                                            required=False)
-    removal_url     = zope.schema.TextLine(title=u'Removal URL',
-                                           required=False)
+    removal_url = zope.schema.TextLine(title=u'Removal URL', required=False)
 
 
 class ISubscriberProvider(zope.interface.Interface):
@@ -68,13 +67,13 @@ class INewsletterAttributes(zope.interface.Interface):
     """
 
     author_address = zope.schema.TextLine()
-    author_name    = zope.schema.TextLine(required=False)
+    author_name = zope.schema.TextLine(required=False)
 
     sender_address = zope.schema.TextLine()
-    sender_name    = zope.schema.TextLine(required=False)
+    sender_name = zope.schema.TextLine(required=False)
 
     reply_to_address = zope.schema.TextLine(required=False)
-    reply_to_name    = zope.schema.TextLine(required=False)
+    reply_to_name = zope.schema.TextLine(required=False)
 
     subject = zope.schema.TextLine()
 
@@ -143,7 +142,8 @@ class IConfiguration(zope.interface.Interface):
         title=_(u'Subscriber name XPath selector'),
         description=_(u'The element whose text will be replaced with the name '
                       u'of the subscriber.'),
-        default=u"//*[contains(concat(' ', @class, ' '), ' subscriber-name ')]",
+        default=u"//*[contains(concat(' ', @class, ' '), "
+                u"' subscriber-name ')]",
     )
 
     add_subscriber_preferences = zope.schema.Bool(
@@ -158,7 +158,8 @@ class IConfiguration(zope.interface.Interface):
         description=_(u'The element whose "href" attribute will be replaced. '
                       u'The replacement happens always, no matter if '
                       u'"Add subscriber preferences link" is checked.'),
-        default=u"//a[contains(concat(' ', @class, ' '), ' subscriber-preferences ')]/@href",
+        default=u"//a[contains(concat(' ', @class, ' '), "
+                u"' subscriber-preferences ')]/@href",
     )
 
     subscriber_preferences_html = zope.schema.SourceText(
@@ -183,7 +184,8 @@ class IConfiguration(zope.interface.Interface):
         description=_(u'The element whose "href" attribute will be replaced. '
                       u'This replacement happens always, no matter if '
                       u'"Add subscriber removal link" is checked.'),
-        default=u"//a[contains(concat(' ', @class, ' '), ' subscriber-removal ')]/@href",
+        default=u"//a[contains(concat(' ', @class, ' '), "
+                u"' subscriber-removal ')]/@href",
     )
 
     subscriber_removal_html = zope.schema.SourceText(
@@ -217,10 +219,12 @@ class IConfiguration(zope.interface.Interface):
         # received object (when using z3c.form).
         if not hasattr(obj, 'subscriber_preferences_html'):
             return
-        if obj.add_subscriber_preferences and not obj.subscriber_preferences_html:
-            raise zope.interface.Invalid(
-                _(u'Must provide a preferences HTML if a link for this is to be added.')
-            )
+        if (obj.add_subscriber_preferences and
+                not obj.subscriber_preferences_html):
+            raise zope.interface.Invalid(_(
+                u'Must provide a preferences HTML if a link for this is to be '
+                u'added.'
+            ))
 
     @zope.interface.invariant
     def check_removal_html(obj):
@@ -229,9 +233,10 @@ class IConfiguration(zope.interface.Interface):
         if not hasattr(obj, 'subscriber_removal_html'):
             return
         if obj.add_subscriber_removal and not obj.subscriber_removal_html:
-            raise zope.interface.Invalid(
-                _(u'Must provide a removal HTML if a link for this is to be added.')
-            )
+            raise zope.interface.Invalid(_(
+                u'Must provide a removal HTML if a link for this is to be '
+                u'added.'
+            ))
 
 
 class INewsletterSentEvent(zope.component.interfaces.IObjectEvent):
@@ -243,7 +248,7 @@ class INewsletterSentEvent(zope.component.interfaces.IObjectEvent):
 
     newsletter = zope.interface.Attribute(u'The newsletter that was sent')
     subscriber = zope.interface.Attribute(u'The subscriber')
-    message    = zope.interface.Attribute(u'The compilation result')
+    message = zope.interface.Attribute(u'The compilation result')
 
 
 class IMailing(zope.interface.Interface):

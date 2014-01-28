@@ -24,6 +24,7 @@ setup(
         'Plone',
         'plone.app.dexterity',
         'plone.app.registry',
+        'plone.app.relationfield',
         'plone.behavior',
         'plone.directives.form',
         'plone.namedfile[blobs]',

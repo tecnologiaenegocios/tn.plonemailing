@@ -1,7 +1,8 @@
 from five import grok
 from persistent.dict import PersistentDict
-from plone.memoize.instance import memoize
 from plone.directives import form
+from plone.memoize.instance import memoize
+from plone.supermodel import model
 from Products.CMFCore.interfaces import IDublinCore
 from Products.CMFCore.utils import getToolByName
 from tn.plonemailing import _
@@ -23,11 +24,11 @@ NEWSLETTER_PROPERTIES_KEY = 'tn.plonemailing.newsletter-properties'
 
 @grok.provider(zope.schema.interfaces.IContextSourceBinder)
 def possiblePossibleSubscriberProviders(context):
-    terms        = []
+    terms = []
     term_factory = zope.schema.vocabulary.SimpleVocabulary.createTerm
-    identifier   = interfaces.IPossibleSubscriberProvider.__identifier__
-    catalog      = getToolByName(context, 'portal_catalog')
-    intids       = zope.component.getUtility(IIntIds)
+    identifier = interfaces.IPossibleSubscriberProvider.__identifier__
+    catalog = getToolByName(context, 'portal_catalog')
+    intids = zope.component.getUtility(IIntIds)
     for item in catalog(object_provides=identifier):
         obj = item.getObject()
         obj_id = intids.getId(obj)
@@ -44,7 +45,7 @@ def SequenceSelectFieldWidget(field, request):
 base_newsletter = interfaces.INewsletterAttributes
 
 
-class INewsletterFromContent(form.Schema, interfaces.ISubscriberProvider):
+class INewsletterFromContent(model.Schema, interfaces.ISubscriberProvider):
     """Transform a content into a newsletter.
     """
 
@@ -135,6 +136,7 @@ def add_annotations_properties(*names):
     def generate_property(name):
         def get(self):
             return self.annotations.get(name)
+
         def set(self, value):
             self.annotations[name] = value
         return property(get, set)
@@ -166,8 +168,10 @@ class NewsletterFromContent(object):
                 '_newsletter_from_content_possible_subscriber_providers',
                 []
             )
+
         def set(self, value):
-            self.context._newsletter_from_content_possible_subscriber_providers = value
+            self.context.\
+                _newsletter_from_content_possible_subscriber_providers = value
         return property(get, set)
 
     @property
@@ -257,6 +261,7 @@ class NewsletterAttributes(grok.Adapter):
         if values is None:
             values = annotations[NEWSLETTER_PROPERTIES_KEY] = PersistentDict()
         return values
+
 
 class INewsletterFromContentMarker(IHasRelations,
                                    interfaces.IPossibleNewsletterAttributes):

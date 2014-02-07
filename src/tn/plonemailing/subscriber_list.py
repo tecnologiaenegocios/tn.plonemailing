@@ -2,6 +2,7 @@ from cStringIO import StringIO
 from five import grok
 from plone.directives import form
 from plone.namedfile.field import NamedFile
+from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
 from Products.statusmessages.interfaces import IStatusMessage
 from tn.plonemailing import _
@@ -27,7 +28,7 @@ def precondition(subscriber_list, name, object):
         subscriber.checkEmailUniqueness(subscriber_list, name, object)
 
 
-class ISubscriberListSchema(form.Schema,
+class ISubscriberListSchema(model.Schema,
                             IHasRelations,
                             interfaces.IPossibleSubscriberProvider):
 
@@ -66,7 +67,7 @@ encodings = schema.vocabulary.SimpleVocabulary([
 ])
 
 
-class IImportFormSchema(form.Schema):
+class IImportFormSchema(model.Schema):
 
     file = NamedFile(title=_(u'File'))
 
@@ -135,7 +136,6 @@ class CSVImporter(object):
             )
             add_form = add_view.form_instance
         self.add_form = add_form
-
 
     def __call__(self, data, encoding):
         all_errors = []
@@ -226,7 +226,7 @@ class SubscriberAdder(object):
         prefix = self.add_form.prefix
         request = zope.publisher.browser.TestRequest()
 
-        request.form[prefix + 'widgets.title']  = email
+        request.form[prefix + 'widgets.title'] = email
         request.form[prefix + 'widgets.format'] = format.lower()
         alsoProvides(request, z3c.form.interfaces.IFormLayer)
 

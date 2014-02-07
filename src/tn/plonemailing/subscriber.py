@@ -1,6 +1,7 @@
 from five import grok
-from plone.directives import form
 from plone.app.dexterity.behaviors import metadata
+from plone.directives import form
+from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
 from Products.statusmessages.interfaces import IStatusMessage
 from tn.plonemailing import _
@@ -24,6 +25,8 @@ import re
 
 is_email_re = re.compile(r'^[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,4}$',
                          re.IGNORECASE)
+
+
 def is_email(value):
     if is_email_re.match(value):
         return True
@@ -35,7 +38,7 @@ formats = schema.vocabulary.SimpleVocabulary([
 ])
 
 
-class ISubscriberSchema(form.Schema):
+class ISubscriberSchema(model.Schema):
 
     title = schema.TextLine(title=_(u'E-mail'), constraint=is_email)
     format = schema.Choice(title=_(u'Format'), vocabulary=formats)
@@ -83,9 +86,11 @@ def activateSubscriber(subscriber, time=None, container=None):
     notify_modified(subscriber, container,
                     (metadata.IPublication, 'effective'))
 
+
 def getSubscriberActivation(subscriber):
     publication = metadata.IPublication(subscriber)
     return publication.effective
+
 
 def deactivateSubscriber(subscriber, time=None, container=None):
     time = time or datetime.datetime.now()
@@ -94,9 +99,11 @@ def deactivateSubscriber(subscriber, time=None, container=None):
     notify_modified(subscriber, container,
                     (metadata.IPublication, 'expires'))
 
+
 def getSubscriberDeactivation(subscriber):
     publication = metadata.IPublication(subscriber)
     return publication.expires
+
 
 def notify_modified(subscriber, container=None, *interfaces_attributes):
     descriptions = [Attributes(params[0], *params[1:])
@@ -211,7 +218,9 @@ class Deactivate(form.SchemaForm):
 
         IStatusMessage(self.request).add(_(
             u'subscription_removal_confirmed',
-            default=_(u'Removal of ${email} from list ${list} has been confirmed.'),
+            default=_(
+                u'Removal of ${email} from list ${list} has been confirmed.'
+            ),
             mapping=dict(email=self.context.title,
                          list=self.context.__parent__.title)
         ))

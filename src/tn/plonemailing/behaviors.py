@@ -163,11 +163,12 @@ class NewsletterFromContent(object):
     @apply
     def possible_subscriber_providers():
         def get(self):
+            # If set to None, return an empty list.
             return getattr(
                 self.context,
                 '_newsletter_from_content_possible_subscriber_providers',
                 []
-            )
+            ) or []
 
         def set(self, value):
             self.context.\

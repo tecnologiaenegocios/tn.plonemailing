@@ -1,11 +1,7 @@
-# encoding: utf-8
-
 from Products.CMFCore.utils import getToolByName
 from tn.plonemailing import behaviors
 from tn.plonemailing import interfaces
 from zope.app.testing import placelesssetup
-from zope.schema.interfaces import ITitledTokenizedTerm
-from zope.schema.interfaces import IVocabularyTokenized
 
 import datetime
 import stubydoo
@@ -25,61 +21,6 @@ class IntIds(object):
 
 
 intids = IntIds()
-
-
-@stubydoo.assert_expectations
-class TestPossibleSubscriberProviders(unittest.TestCase):
-
-    def setUp(self):
-        placelesssetup.setUp(self)
-        zope.component.provideUtility(intids)
-
-        self.catalog = stubydoo.double(__call__=lambda x: None)
-        self.context = stubydoo.double(portal_catalog=self.catalog)
-
-        self.possible_list = stubydoo.double()
-        self.brain = stubydoo.double(getObject=lambda x: self.possible_list,
-                                     Title=u'the title')
-
-        stubydoo.stub(self.catalog.__call__).with_args(
-            object_provides=interfaces.IPossibleSubscriberProvider.__identifier__
-        ).and_return([self.brain])
-
-        self.original_getToolByName_code = getToolByName.func_code
-        getToolByName_stup = lambda context, name: getattr(context, name)
-        getToolByName.func_code = getToolByName_stup.func_code
-
-    def tearDown(self):
-        placelesssetup.tearDown()
-        getToolByName.func_code = self.original_getToolByName_code
-
-    def test_vocabulary_is_returned(self):
-        vocabulary = behaviors.possiblePossibleSubscriberProviders(self.context)
-        self.assertTrue(IVocabularyTokenized.providedBy(vocabulary))
-
-    def test_vocabulary_term_has_titles(self):
-        vocabulary = behaviors.possiblePossibleSubscriberProviders(self.context)
-        term = vocabulary.getTermByToken(str(hash(self.possible_list)))
-        self.assertTrue(ITitledTokenizedTerm.providedBy(term))
-
-    def test_vocabulary_term_values_are_the_actual_objects(self):
-        vocabulary = behaviors.possiblePossibleSubscriberProviders(self.context)
-        term = vocabulary.getTermByToken(str(hash(self.possible_list)))
-        self.assertTrue(term.value is self.possible_list)
-
-    def test_terms_with_titles_as_utf8_byte_strings(self):
-        self.brain.Title = 'UTF-8 string á'
-        vocabulary = behaviors.possiblePossibleSubscriberProviders(self.context)
-        term = vocabulary.getTermByToken(str(hash(self.possible_list)))
-
-        self.assertTrue(term.title == self.brain.Title.decode('utf-8'))
-
-    def test_terms_with_titles_as_unicode_strings(self):
-        self.brain.Title = u'á'
-        vocabulary = behaviors.possiblePossibleSubscriberProviders(self.context)
-        term = vocabulary.getTermByToken(str(hash(self.possible_list)))
-
-        self.assertTrue(term.title == self.brain.Title)
 
 
 @stubydoo.assert_expectations
@@ -112,7 +53,7 @@ class TestNewsletterFromContent(unittest.TestCase):
 
     def test_subscribers(self):
         double = stubydoo.double
-        stub   = stubydoo.stub
+        stub = stubydoo.stub
 
         sub1, sub2, sub3, sub4 = double(), double(), double(), double()
         obj1 = double()
@@ -170,7 +111,8 @@ class TestNewsletterFromContent(unittest.TestCase):
     def test_possible_subscriber_providers_is_saved_in_an_attribute(self):
         self.adapted.possible_subscriber_providers = 'the value'
         self.assertEquals(
-            self.context._newsletter_from_content_possible_subscriber_providers,
+            self.context.
+            _newsletter_from_content_possible_subscriber_providers,
             'the value'
         )
 

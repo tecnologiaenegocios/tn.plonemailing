@@ -1,16 +1,15 @@
 from five import grok
 from persistent.dict import PersistentDict
 from plone.directives import form
+from plone.formwidget.contenttree.source import ObjPathSourceBinder
 from plone.memoize.instance import memoize
 from plone.supermodel import model
 from Products.CMFCore.interfaces import IDublinCore
 from Products.CMFCore.utils import getToolByName
 from tn.plonemailing import _
 from tn.plonemailing import interfaces
-from z3c.form.browser.orderedselect import SequenceChoiceSelectFieldWidget
 from z3c.relationfield.interfaces import IHasRelations
 from zope.annotation.interfaces import IAnnotations
-from zope.intid.interfaces import IIntIds
 
 import inspect
 import plone.app.controlpanel
@@ -22,24 +21,9 @@ import zope.interface
 NEWSLETTER_PROPERTIES_KEY = 'tn.plonemailing.newsletter-properties'
 
 
-@grok.provider(zope.schema.interfaces.IContextSourceBinder)
-def possiblePossibleSubscriberProviders(context):
-    terms = []
-    term_factory = zope.schema.vocabulary.SimpleVocabulary.createTerm
-    identifier = interfaces.IPossibleSubscriberProvider.__identifier__
-    catalog = getToolByName(context, 'portal_catalog')
-    intids = zope.component.getUtility(IIntIds)
-    for item in catalog(object_provides=identifier):
-        obj = item.getObject()
-        obj_id = intids.getId(obj)
-        title = item.Title if isinstance(item.Title, unicode) \
-            else item.Title.decode('utf-8')
-        terms.append(term_factory(obj, obj_id, title))
-    return zope.schema.vocabulary.SimpleVocabulary(terms)
-
-
-def SequenceSelectFieldWidget(field, request):
-    return SequenceChoiceSelectFieldWidget(field, field.value_type, request)
+possiblePossibleSubscriberProviders = ObjPathSourceBinder(**dict(
+    object_provides=interfaces.IPossibleSubscriberProvider.__identifier__
+))
 
 
 base_newsletter = interfaces.INewsletterAttributes
@@ -58,7 +42,6 @@ class INewsletterFromContent(model.Schema, interfaces.ISubscriberProvider):
                 'subject'),
     )
 
-    form.widget(possible_subscriber_providers=SequenceSelectFieldWidget)
     possible_subscriber_providers = z3c.relationfield.RelationList(
         title=_(u'Subscriber providers'),
         description=_(u'The subscriber providers to which this content '

@@ -52,8 +52,7 @@ class INewsletterFromContent(model.Schema, interfaces.ISubscriberProvider):
     form.fieldset(
         'newsletter',
         label=_(u'Newsletter'),
-        fields=('possible_subscriber_providers',
-                'author_address', 'author_name',
+        fields=('author_address', 'author_name',
                 'sender_address', 'sender_name',
                 'reply_to_address', 'reply_to_name',
                 'subject'),

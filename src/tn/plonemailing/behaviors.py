@@ -111,8 +111,6 @@ class INewsletterFromContent(model.Schema, interfaces.ISubscriberProvider):
 
 zope.interface.alsoProvides(INewsletterFromContent, form.IFormFieldProvider)
 
-apply = lambda fn: fn()
-
 
 def add_annotations_properties(*names):
     def generate_property(name):
@@ -142,20 +140,19 @@ class NewsletterFromContent(object):
 
     # 'possible_subscriber_providers' is implemented as an attribute, in order
     # to allow cataloging by z3c.relationfield.
-    @apply
-    def possible_subscriber_providers():
-        def get(self):
-            # If set to None, return an empty list.
-            return getattr(
-                self.context,
-                '_newsletter_from_content_possible_subscriber_providers',
-                []
-            ) or []
+    @property
+    def possible_subscriber_providers(self):
+        # If set to None, return an empty list.
+        return getattr(
+            self.context,
+            '_newsletter_from_content_possible_subscriber_providers',
+            []
+        ) or []
 
-        def set(self, value):
-            self.context.\
-                _newsletter_from_content_possible_subscriber_providers = value
-        return property(get, set)
+    @possible_subscriber_providers.setter
+    def possible_subscriber_providers(self, value):
+        self.context.\
+            _newsletter_from_content_possible_subscriber_providers = value
 
     @property
     def subscribers(self):
@@ -217,15 +214,13 @@ class NewsletterAttributes(grok.Adapter):
     def html(self):
         return interfaces.INewsletterHTML(self.context).html
 
-    @apply
-    def last_sent():
-        def get(self):
-            return self.annotations.get('last_sent')
+    @property
+    def last_sent(self):
+        return self.annotations.get('last_sent')
 
-        def set(self, value):
-            self.annotations['last_sent'] = value
-
-        return property(get, set)
+    @last_sent.setter
+    def last_sent(self, value):
+        self.annotations['last_sent'] = value
 
     @memoize
     def mail_settings(self):

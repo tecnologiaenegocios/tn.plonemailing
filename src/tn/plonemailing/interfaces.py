@@ -287,3 +287,8 @@ class IMailing(zope.interface.Interface):
         This function can be quite expensive if the site root has a lot
         of objects, but it shouldn't anyway.
         """
+
+
+class IBrowserLayer(zope.interface.Interface):
+    """A layer specific to this product.
+    """

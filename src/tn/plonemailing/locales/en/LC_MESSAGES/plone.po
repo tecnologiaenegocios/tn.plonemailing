@@ -17,26 +17,6 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: plone\n"
 
-#. Default: "Someone to receive messages"
-#: profiles/default/types/tn.plonemailing.subscriber.xml
-msgid "tn.plonemailing.subscriber-description"
-msgstr "Someone to receive messages"
-
-#. Default: "Subscriber"
-#: profiles/default/types/tn.plonemailing.subscriber.xml
-msgid "tn.plonemailing.subscriber-title"
-msgstr "Subscriber"
-
-#. Default: "A container for subscriber"
-#: profiles/default/types/tn.plonemailing.subscriber_list.xml
-msgid "tn.plonemailing.subscriber_list-description"
-msgstr "A container for subscriber"
-
-#. Default: "Subscriber list"
-#: profiles/default/types/tn.plonemailing.subscriber_list.xml
-msgid "tn.plonemailing.subscriber_list-title"
-msgstr "Subscriber list"
-
 #. Default: "Import"
 #: profiles/default/types/tn.plonemailing.subscriber_list.xml
 msgid "tn.plonemailing.subscriber_list-import-action"

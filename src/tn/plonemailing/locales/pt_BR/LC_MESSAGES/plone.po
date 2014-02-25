@@ -3,7 +3,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Plone\n"
 "POT-Creation-Date: 2012-06-09 20:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
@@ -12,30 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-"Language-Code: en\n"
-"Language-Name: English\n"
-"Preferred-Encodings: utf-8 latin1\n"
-"Domain: plone\n"
-
-#. Default: "Someone to receive messages"
-#: profiles/default/types/tn.plonemailing.subscriber.xml
-msgid "tn.plonemailing.subscriber-description"
-msgstr "Alguém para receber mensagens"
-
-#. Default: "Subscriber"
-#: profiles/default/types/tn.plonemailing.subscriber.xml
-msgid "tn.plonemailing.subscriber-title"
-msgstr "Inscrito"
-
-#. Default: "A container for subscriber"
-#: profiles/default/types/tn.plonemailing.subscriber_list.xml
-msgid "tn.plonemailing.subscriber_list-description"
-msgstr "Um receptáculo para inscritos"
-
-#. Default: "Subscriber list"
-#: profiles/default/types/tn.plonemailing.subscriber_list.xml
-msgid "tn.plonemailing.subscriber_list-title"
-msgstr "Lista de inscritos"
+"Language: pt_BR\n"
 
 #. Default: "Import"
 #: profiles/default/types/tn.plonemailing.subscriber_list.xml

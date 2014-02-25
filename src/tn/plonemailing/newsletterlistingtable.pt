@@ -1,0 +1,122 @@
+<div
+    id="newsletterlisting-main-table"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    i18n:domain="plone"
+    >
+  <input
+      type="hidden"
+      name="sort_on"
+      tal:attributes="value view/sort_on"
+      />
+  <input
+      type="hidden"
+      name="sort_order"
+      tal:attributes="value view/sort_order"
+      />
+  <input
+      type="hidden"
+      name="pagenumber"
+      tal:attributes="value view/batch/pagenumber"
+      />
+  <input
+      type="hidden"
+      name="show_all"
+      tal:attributes="value view/show_all"
+      />
+  <input
+      type="hidden"
+      name="url"
+      tal:attributes="value view/url"
+      />
+
+  <p
+      class="discreet"
+      tal:condition="not: view/batch"
+      i18n:translate="description_no_visible_items_add_paste"
+      >
+    This folder has no visible items. To add content, press the
+    add button, or paste content from another location.
+  </p>
+
+  <div
+      tal:replace="structure view/batching"
+      tal:condition="not:view/show_all"
+      />
+
+  <table
+      class="listing"
+      summary="Content listing"
+      i18n:attributes="summary summary_content_listing;"
+      >
+    <thead>
+      <tr>
+        <th
+            scope="column"
+            class="nosort column sort-on-sortable_title"
+            i18n:translate=""
+            i18n:domain="tn.plonemailing">Newsletter title</th>
+        <th
+            scope="column"
+            class="nosort column sort-on-sortable_last_sent"
+            i18n:translate=""
+            i18n:domain="tn.plonemailing">Issuing date</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr
+          tal:repeat="item view/batch"
+          tal:attributes="class item/table_row_class"
+          >
+        <td>
+          <img tal:replace="structure item/icon|nothing" />
+          <a
+              href=""
+              title="Newsletter"
+              class="state-published contenttype-page"
+              tal:define="state_class item/state_class;
+                          type_class item/type_class"
+              tal:attributes="href item/url;
+                              title item/href_title;
+                              class string: ${state_class} ${type_class};"
+              tal:content="item/title"
+              >
+            Newsletter
+          </a>
+        </td>
+
+        <td tal:content="item/issuing_date">
+          08/19/2001 03:01 AM
+        </td>
+      </tr>
+    </tbody>
+
+    <tfoot tal:condition="not:view/within_batch_size">
+      <tr tal:condition="not:view/show_all">
+        <th colspan="2" class="nosort">
+          <a
+              tal:attributes="href view/show_all_url"
+              i18n:translate="label_show_all"
+              id="newsletterlisting-show-all">Show all items</a>
+        </th>
+      </tr>
+
+      <tr tal:condition="view/show_all">
+        <th colspan="2" class="nosort">
+          <a
+              tal:attributes="href view/view_url"
+              i18n:translate="label_show_batched"
+              id="newsletterlisting-show-batched">Show batched</a>
+        </th>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div
+      tal:replace="structure view/batching"
+      tal:condition="not:view/show_all"
+      />
+</div>

@@ -39,6 +39,14 @@
       factory=".newsletter.getSortableLastSent"
       />
 
+  <browser:menuItem
+      for="Products.ATContentTypes.interfaces.IATFolder"
+      menu="plone_displayviews"
+      title="Newsletter listing"
+      action="newsletter-listing"
+      description="Shows the contained newsletters of the folder"
+      />
+
   <genericsetup:registerProfile
       name="default"
       title="TN Plone Mailing"

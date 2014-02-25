@@ -3,8 +3,8 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2014-01-24 18:03+0000\n"
+"Project-Id-Version: tn.plonemailing 1.0\n"
+"POT-Creation-Date: 2014-02-25 22:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,16 +12,22 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-"Language-Code: en\n"
-"Language-Name: English\n"
-"Preferred-Encodings: utf-8 latin1\n"
-"Domain: tn.plonemailing\n"
+"Language: pt_BR\n"
 
-#: tn/plonemailing/subscriber_list.py:37
+#. Default: "Um complemento para Plone para construir boletins informativos"
+#: Profile description in configure.zcml
+msgid "A Plone add-on for making newsletters"
+msgstr "Um complemento para Plone para construir boletins informativos"
+
+#: tn/plonemailing/profiles/default/types/tn.plonemailing.subscriber_list.xml
+msgid "A container for subscribers"
+msgstr "Um receptáculo para inscritos"
+
+#: tn/plonemailing/subscriber_list.py:38
 msgid "A short summary"
 msgstr "Um resumo curto"
 
-#: tn/plonemailing/subscriber.py:163
+#: tn/plonemailing/subscriber.py:170
 msgid "Activate"
 msgstr "Ativar"
 
@@ -33,23 +39,23 @@ msgstr "Adicionar link de preferências do inscrito"
 msgid "Add subscriber removal link"
 msgstr "Adicionar link de descadastramento do inscrito"
 
-#: tn/plonemailing/subscriber_list.py:114
+#: tn/plonemailing/subscriber_list.py:115
 msgid "All subscribers imported."
 msgstr "Todos os inscritos importados."
 
-#: tn/plonemailing/behaviors.py:73
+#: tn/plonemailing/behaviors.py:56
 msgid "Author e-mail address"
 msgstr "E-mail do autor"
 
-#: tn/plonemailing/behaviors.py:82
+#: tn/plonemailing/behaviors.py:65
 msgid "Author name"
 msgstr "Nome do autor"
 
-#: tn/plonemailing/subscriber_list.py:86
+#: tn/plonemailing/subscriber_list.py:87
 msgid "CSV import"
 msgstr "Importaçao de CSV"
 
-#: tn/plonemailing/subscriber_list.py:118
+#: tn/plonemailing/subscriber_list.py:119
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -57,11 +63,11 @@ msgstr "Cancelar"
 msgid "Cannot be empty"
 msgstr "Não pode ser vazio"
 
-#: tn/plonemailing/subscriber.py:203
+#: tn/plonemailing/subscriber.py:210
 msgid "Deactivate"
 msgstr "Desativar"
 
-#: tn/plonemailing/subscriber.py:40
+#: tn/plonemailing/subscriber.py:43
 msgid "E-mail"
 msgstr "E-mail"
 
@@ -69,11 +75,11 @@ msgstr "E-mail"
 msgid "E-mail (when available)"
 msgstr "E-mail (quando disponível)"
 
-#: tn/plonemailing/subscriber.py:76
+#: tn/plonemailing/subscriber.py:79
 msgid "E-mail address is not unique in this folder."
 msgstr "Endereço de e-mail não é único nesta pasta."
 
-#: tn/plonemailing/subscriber_list.py:74
+#: tn/plonemailing/subscriber_list.py:75
 msgid "Encoding"
 msgstr "Codificação"
 
@@ -81,7 +87,7 @@ msgstr "Codificação"
 msgid "Error"
 msgstr "Erro"
 
-#: tn/plonemailing/subscriber_list.py:71
+#: tn/plonemailing/subscriber_list.py:72
 msgid "File"
 msgstr "Arquivo"
 
@@ -89,11 +95,11 @@ msgstr "Arquivo"
 msgid "File is not a proper CSV."
 msgstr "Arquivo não é um CSV apropriado."
 
-#: tn/plonemailing/subscriber.py:41
+#: tn/plonemailing/subscriber.py:44
 msgid "Format"
 msgstr "Formato"
 
-#: tn/plonemailing/subscriber.py:33
+#: tn/plonemailing/subscriber.py:36
 msgid "HTML"
 msgstr "HTML"
 
@@ -105,7 +111,7 @@ msgstr "Se um link para preferências do inscrito deve ser adicionado ao fim de 
 msgid "If a link for subscriber removal should be added to the end of generated newsletters."
 msgstr "Se um link para descadastramento do inscrito deve ser adicionado ao fim de boletins gerados."
 
-#: tn/plonemailing/subscriber_list.py:98
+#: tn/plonemailing/subscriber_list.py:99
 msgid "Import"
 msgstr "Importar"
 
@@ -133,6 +139,10 @@ msgstr "Formato de linha inválido."
 msgid "Issue date"
 msgstr "Data de envio"
 
+#: tn/plonemailing/newsletterlistingtable.pt:61
+msgid "Issuing date"
+msgstr "Data de envio"
+
 #: tn/plonemailing/interfaces.py:206
 msgid "Mark to make styles be added to each tag individually (for HTML email only).  Some webmail services like GMail will strip \"style\" blocks before showing the message to the user.  With this option enabled, the styles are less likely to be stripped by those services because they will be added in inline \"style\" attributes together with each tag they refer to."
 msgstr "Marque para fazer com que estilos sejam adicionados à cada tag individualmente (para email em HTML apenas).  Alguns serviços de webmail como GMail irão remover blocos \"style\" antes de mostrar a mensagem ao usuário.  Com essa opção habilitada, os estilos têm menos chance de serem removidos por esses serviços pois eles serão adicionados em atributos \"style\" juntamente com cada tag às quais eles se referem."
@@ -145,27 +155,41 @@ msgstr "Necessário prover o HTML de preferências se um link para isso deve ser
 msgid "Must provide a removal HTML if a link for this is to be added."
 msgstr "Necessário prover o HTML de descadastramento se um link para isso deve ser adicionado."
 
-#: tn/plonemailing/subscriber_list.py:34
+#: tn/plonemailing/subscriber_list.py:35
 msgid "Name"
 msgstr "Nome"
 
-#: tn/plonemailing/behaviors.py:53
+#: tn/plonemailing/behaviors.py:38
 msgid "Newsletter"
 msgstr "Boletim informativo"
+
+#. Default: "Boletim informativo a partir do conteúdo"
+#: Newsletter from content behavior description in configure.zcml
+msgid "Newsletter from content"
+msgstr "Boletim informativo a partir do conteúdo"
+
+#. Default: "Listagem de boletins informativos"
+#: Newsletter menu item title in configure.zcml
+msgid "Newsletter listing"
+msgstr "Listagem de boletins informativos"
+
+#: tn/plonemailing/newsletterlistingtable.pt:56
+msgid "Newsletter title"
+msgstr "Título do boletim"
 
 #: tn/plonemailing/subscriber_list_templates/csvimportform.pt:24
 msgid "No subscriber was imported."
 msgstr "Nenhum inscrito foi importado."
 
-#: tn/plonemailing/subscriber_list.py:110
+#: tn/plonemailing/subscriber_list.py:111
 msgid "One or more subscribers could not be imported."
 msgstr "Um ou mais inscritos não puderam ser importados."
 
-#: tn/plonemailing/behaviors.py:108
+#: tn/plonemailing/behaviors.py:91
 msgid "Reply e-mail address"
 msgstr "E-mail de resposta"
 
-#: tn/plonemailing/behaviors.py:116
+#: tn/plonemailing/behaviors.py:99
 msgid "Reply person name"
 msgstr "Nome para resposta"
 
@@ -173,17 +197,34 @@ msgstr "Nome para resposta"
 msgid "Row number"
 msgstr "Número da linha"
 
-#: tn/plonemailing/behaviors.py:90
+#: tn/plonemailing/behaviors.py:73
 msgid "Sender e-mail address"
 msgstr "E-mail do remetente"
 
-#: tn/plonemailing/behaviors.py:101
+#: tn/plonemailing/behaviors.py:84
 msgid "Sender name"
 msgstr "Nome do remetente"
 
-#: tn/plonemailing/behaviors.py:122
+#. Default: "Mostra os boletins informativos contidos nesta pasta"
+#: Newsletter menu item description in configure.zcml
+msgid "Shows the contained newsletters of the folder"
+msgstr "Mostra os boletins informativos contidos nesta pasta"
+
+#: tn/plonemailing/profiles/default/types/tn.plonemailing.subscriber.xml
+msgid "Someone to receive messages"
+msgstr "Alguém para receber mensagens"
+
+#: tn/plonemailing/behaviors.py:105
 msgid "Subject"
 msgstr "Assunto"
+
+#: tn/plonemailing/profiles/default/types/tn.plonemailing.subscriber.xml
+msgid "Subscriber"
+msgstr "Inscrito"
+
+#: tn/plonemailing/profiles/default/types/tn.plonemailing.subscriber_list.xml
+msgid "Subscriber list"
+msgstr "Lista de inscritos"
 
 #: tn/plonemailing/interfaces.py:142
 msgid "Subscriber name XPath selector"
@@ -197,7 +238,7 @@ msgstr "HTML de preferências do inscrito"
 msgid "Subscriber preferences URL XPath selector"
 msgstr "Seletor XPath da URL de preferências do inscrito"
 
-#: tn/plonemailing/behaviors.py:63
+#: tn/plonemailing/behaviors.py:46
 msgid "Subscriber providers"
 msgstr "Provedores de inscritos"
 
@@ -218,19 +259,19 @@ msgstr "Inscritos não importados"
 msgid "TN Plone Mailing settings"
 msgstr "Configuração de TN Plone Mailing"
 
-#: tn/plonemailing/subscriber.py:34
+#: tn/plonemailing/subscriber.py:37
 msgid "Text"
 msgstr "Texto"
 
-#: tn/plonemailing/behaviors.py:74
+#: tn/plonemailing/behaviors.py:57
 msgid "The e-mail address of the author of the newsletter.  If none is provided, the address set as the site's contact form address will be used."
 msgstr "O endereço de e-mail do autor do boletim.  Se nenhum é informado, o endereço configurado como o do formulário de contato do site será usado."
 
-#: tn/plonemailing/behaviors.py:91
+#: tn/plonemailing/behaviors.py:74
 msgid "The e-mail address of the sender of the newsletter.  This should match the authentication address used to send the newsletter (otherwise you may have delivery problems for some subscribers).  If none is provided, the \"Author e-mail address\" is used."
 msgstr "O endereço de e-mail do remetente do boletim.  Este deve ser o mesmo endereço de autenticação usado para enviar o boletim (caso contrário você pode ter problemas de entrega para alguns inscritos).  Se nenhum é informado, o \"E-mail do autor\" é usado."
 
-#: tn/plonemailing/behaviors.py:109
+#: tn/plonemailing/behaviors.py:92
 msgid "The e-mail address where replies should go to.  Leave blank to not set a reply address."
 msgstr "O endereço de e-mail para onde respostas devem ir.  Deixe em branco para não usar um endereço de resposta."
 
@@ -250,23 +291,23 @@ msgstr "O elemento cujo texto será substituído pelo nome do inscrito."
 msgid "The following subscribers could not be imported:"
 msgstr "Os seguintes inscritos não foram importados:"
 
-#: tn/plonemailing/behaviors.py:83
+#: tn/plonemailing/behaviors.py:66
 msgid "The name of the author of the newsletter.  This is the name which will appear in the in the mailbox of the subscriber."
 msgstr "O nome do autor do boletim.  Este é o nome que aparecerá na caixa de entrada do inscrito."
 
-#: tn/plonemailing/behaviors.py:117
+#: tn/plonemailing/behaviors.py:100
 msgid "The name of the person whom replies should go to."
 msgstr "O nome da pessoa para quem as respostas devem ir."
 
-#: tn/plonemailing/behaviors.py:102
+#: tn/plonemailing/behaviors.py:85
 msgid "The name of the sender of the newsletter.  If none is provided, the \"Author name\" is used."
 msgstr "O nome do remetente do boletim.  Se nenhum é informado, o \"Nome do autor\" é usado."
 
-#: tn/plonemailing/behaviors.py:123
+#: tn/plonemailing/behaviors.py:106
 msgid "The subject of the newsletter.  If none is provided the title of the content is used."
 msgstr "O assunto do boletim.  Se nenhum é informado, o título do conteúdo é usado."
 
-#: tn/plonemailing/behaviors.py:64
+#: tn/plonemailing/behaviors.py:47
 msgid "The subscriber providers to which this content should be sent."
 msgstr "Os provedores de inscritos para os quais este conteúdo deve ser enviado."
 
@@ -274,37 +315,37 @@ msgstr "Os provedores de inscritos para os quais este conteúdo deve ser enviado
 msgid "The time and date an item was last sent"
 msgstr "A hora e data que um ítem foi enviado pela última vez"
 
-#: tn/plonemailing/subscriber_list.py:87
+#: tn/plonemailing/subscriber_list.py:88
 msgid "Use this form to input a batch of subscribers (without confirmation). Provide a CSV table with columns email and format (\"html\" or \"text\"), in this order, without headers.  Optionally, you can add one more column to inform an deactivation date for the subscriber.  Also, a fourth column may be added to indicate an activation date."
 msgstr "Use este formulário para criar um lote de inscritos (sem confirmação).  Envie uma tabela CSV com colunas email e formato (\"html\" ou \"text\"), nesta ordem, sem cabeçalhos.  Opcionalmente, você pode adicionar uma coluna a mais para informar uma data de desativação para o inscrito.  Ainda, uma quarta coluna pode ser adicionada para indicar uma data de ativação."
 
 #. Default: "Please confirm subscription in ${list_title} list."
-#: tn/plonemailing/subscriber.py:155
+#: tn/plonemailing/subscriber.py:162
 msgid "activate_subscriber_description_message"
 msgstr "Por favor confirme sua inscrição na lista ${list_title}."
 
 #. Default: "Subscription confirmation for ${email}"
-#: tn/plonemailing/subscriber.py:149
+#: tn/plonemailing/subscriber.py:156
 msgid "activate_subscriber_title_message"
 msgstr "Confirmação de inscrição de ${email}"
 
 #. Default: "Please confirm removal from ${list_title} list."
-#: tn/plonemailing/subscriber.py:195
+#: tn/plonemailing/subscriber.py:202
 msgid "deactivate_subscriber_description_message"
 msgstr "Por favor confirme descadastramento da lista ${list_title}."
 
 #. Default: "Removal confirmation for ${email}"
-#: tn/plonemailing/subscriber.py:189
+#: tn/plonemailing/subscriber.py:196
 msgid "deactivate_subscriber_title_message"
 msgstr "Confirmação de descadastramento para ${email}"
 
 #. Default: "Subscription of ${email} has been confirmed."
-#: tn/plonemailing/subscriber.py:172
+#: tn/plonemailing/subscriber.py:179
 msgid "subscription_confirmed"
 msgstr "Inscrição de ${email} for confirmada."
 
 #. Default: "Removal of ${email} from list ${list} has been confirmed."
-#: tn/plonemailing/subscriber.py:212
+#: tn/plonemailing/subscriber.py:219
 msgid "subscription_removal_confirmed"
 msgstr "Descadastramento de ${email} da lista ${list} foi confirmado."
 

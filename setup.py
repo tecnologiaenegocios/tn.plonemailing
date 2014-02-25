@@ -22,6 +22,7 @@ setup(
     install_requires=[
         'setuptools',
         'Plone',
+        'plone.api',
         'plone.app.dexterity',
         'plone.app.registry',
         'plone.app.relationfield',

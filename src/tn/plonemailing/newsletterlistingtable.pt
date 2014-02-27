@@ -107,7 +107,7 @@
       <tr tal:condition="view/show_all">
         <th colspan="2" class="nosort">
           <a
-              tal:attributes="href view/view_url"
+              tal:attributes="href view/url"
               i18n:translate="label_show_batched"
               id="newsletterlisting-show-batched">Show batched</a>
         </th>

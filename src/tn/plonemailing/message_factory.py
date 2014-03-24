@@ -76,7 +76,12 @@ def build_message_root(newsletter, subscriber):
     msg['From'] = make_address_header('From',
                                       newsletter.author_name,
                                       newsletter.author_address)
-    msg['To'] = make_address_header('To', subscriber.name, subscriber.email)
+
+    # Here we call .encode() because MailHost will assume that the headers are
+    # strings, not header.Header instances.
+    msg['To'] = make_address_header('To', subscriber.name,
+                                    subscriber.email).encode()
+
     msg['Date'] = utils.formatdate()
 
     if newsletter.subject:

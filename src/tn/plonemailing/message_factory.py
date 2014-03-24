@@ -1,10 +1,11 @@
+from email import charset
+from email import header
 from email import message
 from email import utils
 from five import grok
 from tn.plonemailing import interfaces
 from zope.component import getMultiAdapter
 
-import email.header
 import os
 import quopri
 import random
@@ -12,10 +13,15 @@ import re
 import time
 
 
+header_default_charset = charset.Charset('utf-8')
+header_default_charset.header_encoding = charset.QP
+domain_re = re.compile(r'.*@([^@]+)$')
+
+
 class BaseMessageFactory(object):
     def __init__(self, context, request, newsletter, subscriber):
-        self.context    = context
-        self.request    = request
+        self.context = context
+        self.request = request
         self.newsletter = newsletter
         self.subscriber = subscriber
 
@@ -66,16 +72,17 @@ def HTMLMessageFactory(context, request, newsletter, subscriber):
 
 def build_message_root(newsletter, subscriber):
     msg = message.Message()
-    add_address_header(msg, 'From',
-                       newsletter.author_name,
-                       newsletter.author_address)
-    msg['To']   = utils.formataddr((subscriber.name, subscriber.email))
+
+    msg['From'] = make_address_header('From',
+                                      newsletter.author_name,
+                                      newsletter.author_address)
+    msg['To'] = make_address_header('To', subscriber.name, subscriber.email)
     msg['Date'] = utils.formatdate()
 
     if newsletter.subject:
-        msg['Subject'] = email.header.make_header(
-            [(newsletter.subject, 'utf-8')], header_name='Subject'
-        )
+        msg['Subject'] = header.Header(newsletter.subject,
+                                       charset=header_default_charset,
+                                       header_name='Subject')
 
     if subscriber.removal_url:
         msg['List-Unsubscribe'] = '<%s>' % subscriber.removal_url
@@ -84,15 +91,15 @@ def build_message_root(newsletter, subscriber):
 
     if (newsletter.reply_to_address and
             newsletter.reply_to_address != newsletter.author_address):
-        add_address_header(msg, 'Reply-To',
-                           newsletter.reply_to_name,
-                           newsletter.reply_to_address)
+        msg['Reply-To'] = make_address_header('Reply-To',
+                                              newsletter.reply_to_name,
+                                              newsletter.reply_to_address)
 
     if (newsletter.sender_address and
             newsletter.sender_address != newsletter.author_address):
-        add_address_header(msg, 'Sender',
-                           newsletter.sender_name,
-                           newsletter.sender_address)
+        msg['Sender'] = make_address_header('Sender',
+                                            newsletter.sender_name,
+                                            newsletter.sender_address)
 
     return msg
 
@@ -134,17 +141,14 @@ def set_part_payload(part, content_type, content):
     part.set_payload(quopri.encodestring(content.encode('utf-8')))
 
 
-def add_address_header(part, header_name, name, address):
-    parts = []
+def make_address_header(header_name, name, address):
+    h = header.Header(charset=header_default_charset, header_name=header_name)
+
     if name:
-        parts.append((name, 'utf-8'))
-    parts.append(("<%s>" % address, 'ascii'))
-    part[header_name] = unicode(
-        email.header.make_header(parts, header_name=header_name)
-    )
+        h.append(name)
+    h.append("<%s>" % address, 'ascii')
 
-
-domain_re = re.compile(r'.*@([^@]+)$')
+    return h
 
 
 def add_message_id(message):
@@ -172,7 +176,5 @@ def extract_sender(message):
 
 
 def extract_addresses(header):
-    if isinstance(header, email.header.Header):
-        header = unicode(header)
     parts = [part.strip() for part in unicode(header).split(',')]
     return [addr for name, addr in utils.getaddresses(parts)]
